@@ -33,10 +33,10 @@
   "styles": [],
   "packs": [],
   "url": "https://github.com/GeneralHuli/HeroLab-Importer",
-  "manifest": "https://github.com/GeneralHuli/HeroLab-Importer/main/module.json",
+  "manifest": "https://github.com/GeneralHuli/HeroLab-Importer/blob/main/module.json",
   "download": "https://github.com/GeneralHuli/HeroLab-Importer/releases/download/hlo-importer-0.10.1/hlo-importer-0.10.1.zip",
   "license": "MIT",
-  "readme": "https://github.com/GeneralHuli/HeroLab-Importer",
+  "readme": "https://github.com/GeneralHuli/HeroLab-Importer/blob/main/README.md",
   "bugs": "https://github.com/GeneralHuli/HeroLab-Importer/issues",
   "flags": {
     "manifestPlusVersion": "1.2.0",
