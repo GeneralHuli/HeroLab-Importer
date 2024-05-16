@@ -1,0 +1,46 @@
+{
+  "id": "herolab-importer",
+  "title": "Herolab Online PF2e Import Tool",
+  "description": "This module adds a button to the top of player character sheets allowing them to quickly import their character from Herolab Online.",
+  "author": "GeneralHuli",
+  "authors": [
+    {
+      "name": "Avry Whitesides (SLATE)",
+      "url": "https://github.com/GeneralHuli",
+      "discord": "GeneralHuli"
+    }
+  ],
+  "version": "0.1.1",
+  "compatibility": {
+    "minimum": "10",
+    "verified": "10.285",
+    "maximum": "11"
+  },
+  "compatibleCoreVersion": "11",
+  "relationship": {
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system",
+        "manifest": "https://github.com/foundryvtt/pf2e/releases/download/latest/system.json",
+        "compatibility": {
+          "minimum": "4.0.0",
+          "verified": "5.15.3"
+        }
+      }
+    ]
+  },
+  "styles": [],
+  "packs": [],
+  "url": "https://github.com/GeneralHuli/HeroLab-Importer",
+  "manifest": "https://github.com/GeneralHuli/HeroLab-Importer/main/module.json",
+  "download": "https://github.com/GeneralHuli/HeroLab-Importer/releases/download/hlo-importer-0.10.1/hlo-importer-0.10.1.zip",
+  "license": "MIT",
+  "readme": "https://github.com/GeneralHuli/HeroLab-Importer",
+  "bugs": "https://github.com/GeneralHuli/HeroLab-Importer/issues",
+  "flags": {
+    "manifestPlusVersion": "1.2.0",
+    "allowBugReporter": true
+  },
+  "changelog": "https://github.com/GeneralHuli/HeroLab-Importer/main/CHANGELOG.md"  
+}
