@@ -1,4 +1,4 @@
-//import HeroLabOnlineApiClient from 'herolab-online-api-client';
+const hloiVer = "0.1.1"
 
 let hlodebug = true;
 const color1='color: #7bf542';  //bright green
@@ -8,6 +8,7 @@ const color4='color: #cccccc'; //gray
 const color5='color: #ff0000'; //red
 var HeroLab,userToken;
 var HeroLabButton=true;
+
 
 var characterExport;
 
@@ -70,7 +71,7 @@ Hooks.on('renderActorSheet', function(obj, html){
         let button = $(`<a class="popout" style><i class="fas fa-flask"></i>HeroLab</a>`);
         userToken = game.settings.get('herolab-importer', 'userToken');
         if (hlodebug) {
-          console.log("%cHeroLab Importer | %herolab-importer token: "+ userToken,color1,color4);
+          console.log("%cHeroLab Importer | %cherolab-importer token: "+ userToken,color1,color4);
         }
         button.on('click', () => HeroLab.beginHeroLabImport(obj.object,userToken));
         element.after(button);
@@ -89,15 +90,20 @@ export class HeroLabImporter {
     this.hlodebug = hlodebug;
   }
 
-  beginHeroLabImport(targetActor,userToken) {
-    characterExport = this.getHeroLabExport(targetActor,userToken);
+  async beginHeroLabImport(targetActor,userToken) {
+    characterExport = await this.getHeroLabExport(userToken);
+    this.importActorGameValues(targetActor,characterExport);
+
+    const updates = [{_id: targetActor.id, name: targetActor.name}];
+    const updated = await Actor.updateDocuments(updates);
+    
   }
 
-  async getHeroLabExport(targetActor,userToken) {
+  async getHeroLabExport(userToken) {
     //Fix Element Token Later
     const elementToken = '$allJSEm~@P2#'
 
-    console.log("%cHeroLab Importer | %Getting export from Hero Lab Online ",color1,color4);
+    console.log("%cHeroLab Importer | %cGetting export from Hero Lab Online ",color1,color4);
     const accessToken = await this.getHeroLabAccessToken(userToken);
 
     const characterExport = await fetchJsonWithTimeout("https://api.herolab.online/v1/character/get", {
@@ -126,13 +132,13 @@ export class HeroLabImporter {
     console.log("%cHeroLab Importer | %cCharacter JSON: "+ characterJSON,color1,color4);
     */
     console.log("%cHeroLab Importer | %cCharacter Export: "+ characterExport.export,color1,color4)
-    console.log(characterExport)
+    console.log(characterExport.export)
     return characterExport.export
     
   }
 
   async getHeroLabAccessToken(userToken) {
-    console.log("%cHeroLab Importer | %Getting access token from Hero Lab Online ",color1,color4);
+    console.log("%cHeroLab Importer | %cGetting access token from Hero Lab Online ",color1,color4);
     const response = await fetchJsonWithTimeout("https://api.herolab.online/v1/access/acquire-access-token", {
       method: "POST",
       body: JSON.stringify({
@@ -148,5 +154,19 @@ export class HeroLabImporter {
     return response.accessToken
   }
 
-  
+  importActorGameValues(targetActor,characterExport) {
+    if(!(targetActor.name === characterExport.actors['actor.1'].name)) {
+      targetActor.name = characterExport.actors['actor.1'].name;
+      console.log("%cHeroLab Importer | %cUpdateing Actor Name to "+ characterExport.actors["actor.1"].name,color1,color4);
+    }
+    window.testCharacter = characterExport;
+
+    targetActor.update({
+      "flags.exportSource.world": game.world.id,
+      "flags.exportSource.system": game.system.id,
+      "flags.exportSource.systemVersion": game.system.version,
+      "flags.exportSource.coreVersion": game.version,
+      "flags.herolabimporter.version.value": hloiVer,
+    });
+  }
 }
