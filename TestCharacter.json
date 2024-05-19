@@ -1,0 +1,1075 @@
+{
+    "portfolio": {
+        "charId": "prFlOsps",
+        "version": 289,
+        "baseline": 0
+    },
+    "metadata": {
+        "gameCode": "pf2",
+        "gameName": "Pathfinder Roleplaying Game (Second Edition)",
+        "gameMajor": 4,
+        "gameMinor": 6,
+        "hloVersion": 1295,
+        "exportVersion": 1,
+        "legal": "Hero Lab and the Hero Lab logo are Registered Trademarks of LWD Technology, Inc. Free demo available at https://herolab.online\nPathfinder and associated marks and logos are trademarks of Paizo Inc., and are used under license."
+    },
+    "actors": {
+        "actor.1": {
+            "name": "Tourmaline 2.0",
+            "player": "Brandy",
+            "gameValues": {
+                "actXPNet": 7000,
+                "actLevelNet": 8,
+                "actRace": "fetchling",
+                "actRaceEthnicity": "Brightsorrow",
+                "actBackgroundText": "Tinker",
+                "actClassText": "Inventor 8",
+                "actBulk": 5.99,
+                "actEncumbered": 8,
+                "actOverburdened": 13,
+                "actMoneyNet": "22 gp",
+                "actSpace": 5,
+                "actReachBase": 5,
+                "actReachNet": 5,
+                "actSocietyChar": 2001,
+                "Trait": "anFetchling,trtHumanoid"
+            },
+            "items": {
+                "Perception.146": {
+                    "name": "Perception",
+                    "compset": "Derived",
+                    "components": "Derived",
+                    "stAbScModifier": -1,
+                    "stNet": 9,
+                    "stDC": 19,
+                    "proLevelBonNet": 10,
+                    "ProfLevel": "Trained"
+                },
+                "abDarkvision.278": {
+                    "name": "Darkvision",
+                    "compset": "Ability",
+                    "components": "Ability"
+                },
+                "abExplodeIvt.314": {
+                    "name": "Explode (8d6 F, DC 24)",
+                    "useInPlay": "{b}Range{/b} foot{br}{b}Saving Throw{/b} DC 24 basic Reflex{br}{b}Damage{/b} 8d6 F",
+                    "compset": "Ability",
+                    "components": "Ability",
+                    "vaDC": 24,
+                    "vaSave": "basic Reflex",
+                    "vaRangeText": "foot",
+                    "Action": "Action2",
+                    "Trait": "clInventor,trtFire,trtManipulate,trtUnstable"
+                },
+                "abInnovConstrIvt.348": {
+                    "name": "Construct Innovation",
+                    "compset": "Ability",
+                    "components": "Ability"
+                },
+                "abOverdriveIvt.319": {
+                    "name": "Overdrive (+4, +6 on critical, DC 24)",
+                    "useInPlay": "{b}Saving Throw{/b} DC 24 Skill Check{br}{br}{B}Critical Success{/b} Your gizmos go into a state of incredible efficiency called critical overdrive, adding great power to your attacks. Your Strikes deal additional damage equal to your Intelligence modifier for 1 minute. After the Overdrive ends, your gizmos become unusable as they cool down or reset, and you can’t use Overdrive for 1 minute.{br}{B}Success{/b} Your gizmos go into overdrive, adding power to your attacks. As critical success, except the additional damage is equal to half your Intelligence modifier.{br}{B}Failure{/b} You make a miscalculation and nothing happens.{br}{B}Critical Failure{/b} Whoops! Something explodes. You take fire damage equal to your level, and you can't use Overdrive again for 1 minute as your gizmos cool down and reset.",
+                    "compset": "Ability",
+                    "components": "Ability",
+                    "vaDC": 24,
+                    "vaSave": "Skill Check",
+                    "vaDuraText": "1 minute",
+                    "reFrequency": "once per round",
+                    "reSpecial": "When under the effects of Overdrive, you can still use the Overdrive action. You can’t extend your Overdrive’s duration this way, but you can turn an overdrive into a critical overdrive if you critically succeed. A failure has no effect on your current Overdrive, and you end your Overdrive on a critical failure.",
+                    "Action": "Action1",
+                    "Trait": "clInventor,trtManipulate"
+                },
+                "abReconfigureIvt.321": {
+                    "name": "Reconfigure (DC 26)",
+                    "useInPlay": "{b}Saving Throw{/b} DC 26 Skill Check",
+                    "compset": "Ability",
+                    "components": "Ability",
+                    "vaDC": 26,
+                    "vaSave": "Skill Check"
+                },
+                "abTreatWounds.118": {
+                    "name": "Treat Wounds (2d8, DC 15)",
+                    "useInPlay": "{b}Saving Throw{/b} DC 15 Skill Check{br}{br}{B}Critical Success{/b} The target regains 4d8 Hit Points and loses the wounded condition.{br}{B}Success{/b} The target regains 2d8 Hit Points, and loses the wounded condition.{br}{B}Critical Failure{/b} The target takes 1d8 damage.{br}{b}Healing{/b} 2d8",
+                    "compset": "Ability",
+                    "components": "Ability",
+                    "vaDC": 15,
+                    "vaSave": "Skill Check",
+                    "reRequirements": "You’re wearing or holding a healer’s toolkit (page 288).",
+                    "Trait": "trtExploration,trtHealing,trtManipulate"
+                },
+                "acArmorClass.58": {
+                    "name": "Armor Class",
+                    "useInPlay": "{b}Situational bonuses and penalties{/b}{br}{b}Buckler{/b}: +1 with shield raised",
+                    "compset": "ArmorClass",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 25,
+                    "stMiscMod": 1,
+                    "ProfLevel": "Trained"
+                },
+                "anFetchling.277": {
+                    "name": "Fetchling",
+                    "compset": "Ancestry",
+                    "Rarity": "Uncommon",
+                    "Trait": "anFetchling,trtHumanoid"
+                },
+                "arLeather.574": {
+                    "name": "Leather armor",
+                    "compset": "Armor",
+                    "arAC": 11,
+                    "arItemAC": 1,
+                    "arDexModCap": 4,
+                    "proLevelBonNet": 10,
+                    "grBulk": 1,
+                    "grHPCurrent": 16,
+                    "ProfLevel": "Trained"
+                },
+                "arShieldBuckler.379": {
+                    "name": "Buckler",
+                    "compset": "Armor",
+                    "arAC": 1,
+                    "arItemAC": 1,
+                    "arArmorMinStr": -1,
+                    "grBulk": 0.1,
+                    "grHPCurrent": 6
+                },
+                "asCha.32": {
+                    "name": "Charisma",
+                    "compset": "AbilScore",
+                    "stNet": 10
+                },
+                "asCon.29": {
+                    "name": "Constitution",
+                    "compset": "AbilScore",
+                    "stAbScModifier": 2,
+                    "stNet": 14
+                },
+                "asDex.27": {
+                    "name": "Dexterity",
+                    "compset": "AbilScore",
+                    "stAbScModifier": 4,
+                    "stNet": 18
+                },
+                "asInt.31": {
+                    "name": "Intelligence",
+                    "compset": "AbilScore",
+                    "stAbScModifier": 4,
+                    "stNet": 18
+                },
+                "asStr.26": {
+                    "name": "Strength",
+                    "compset": "AbilScore",
+                    "stAbScModifier": 3,
+                    "stNet": 16
+                },
+                "asWis.30": {
+                    "name": "Wisdom",
+                    "compset": "AbilScore",
+                    "stAbScModifier": -1,
+                    "stNet": 8
+                },
+                "clInventor.310": {
+                    "name": "Inventor",
+                    "compset": "Class",
+                    "ProfLevel": "Untrained",
+                    "Rarity": "Uncommon",
+                    "Trait": "clInventor"
+                },
+                "deiCustom.309": {
+                    "name": "Brigh",
+                    "compset": "Deity"
+                },
+                "ftAssurance.701": {
+                    "name": "Assurance (Crafting)",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 1,
+                    "rePrerequisites": "trained in at least one skill",
+                    "reSpecial": "You can select this feat multiple times. Each time, choose a different skill and gain the beneifts for that skill.",
+                    "Trait": "trtFortune,trtGeneral,trtSkill"
+                },
+                "ftCleverShadowFet.694": {
+                    "name": "Clever Shadow",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 5,
+                    "Trait": "anFetchling,trdOccult,trtShadow"
+                },
+                "ftClockwrkReanClR.697": {
+                    "name": "Clockwork Reanimator Dedication",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 2,
+                    "rePrerequisites": "trained in Crafting",
+                    "reSpecial": "You can’t select another dedication feat until you’ve gained two other feats from the clockwork reanimator archetype. If you retrain out of this feat, you lose the rituals learned from it.",
+                    "Rarity": "Rare",
+                    "Trait": "trtArchetype,trtDedication"
+                },
+                "ftCompanAdvanClR.699": {
+                    "name": "Advanced Reanimated Companion",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 4,
+                    "rePrerequisites": "Clockwork Reanimator Dedication",
+                    "Trait": "trtArchetype"
+                },
+                "ftCompanIncredClR.716": {
+                    "name": "Incredible Reanimated Companion",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 8,
+                    "rePrerequisites": "Advanced Reanimated Companion",
+                    "Trait": "trtArchetype"
+                },
+                "ftConstCompAdvIvt.695": {
+                    "name": "Advanced Construct Companion",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 4,
+                    "rePrerequisites": "construct companion",
+                    "Trait": "clInventor"
+                },
+                "ftConstCompIncIvt.715": {
+                    "name": "Incredible Construct Companion",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 8,
+                    "rePrerequisites": "Advanced Construct Companion",
+                    "Trait": "clInventor"
+                },
+                "ftFetchLoreFet.712": {
+                    "name": "Fetchling Lore",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 1,
+                    "Trait": "anFetchling"
+                },
+                "ftGadgetSpecIvt.680": {
+                    "name": "Gadget Specialist",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 4,
+                    "rePrerequisites": "expert in Crafting",
+                    "Trait": "clInventor"
+                },
+                "ftHijackUndeadClR.700": {
+                    "name": "Hijack Undead (5th level, 1/hour, DC 24)",
+                    "useInPlay": "{b}Range{/b} adjacent square{br}{b}Saving Throw{/b} DC 24 Will{br}{br}{B}Critical Success{/b} The target is unaffected and temporarily immune for 24 hours.{br}{B}Success{/b} The target is unaffected.{br}{B}Failure{/b} The undead creature becomes a minion under your control for 1 minute. The control ends if you or an ally attacks the minion undead.{br}{B}Critical Failure{/b} As failure, but the duration is 1 hour.",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "vaDC": 24,
+                    "vaSave": "Will",
+                    "vaRangeText": "adjacent square",
+                    "trkMaximum": 1,
+                    "reqLevelNet": 4,
+                    "rePrerequisites": "Clockwork Reanimator Dedication",
+                    "reFrequency": "once per hour",
+                    "Period": "Hour",
+                    "Trait": "trtArchetype"
+                },
+                "ftICreatedYouIvt.692": {
+                    "name": "No! No! I Created You! (1/minute)",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "trkMaximum": 1,
+                    "reqLevelNet": 1,
+                    "rePrerequisites": "construct companion",
+                    "reFrequency": "once per minute",
+                    "reTrigger": "Your construct companion would become confused or controlled.",
+                    "Action": "Action1",
+                    "Period": "Minute",
+                    "Trait": "clInventor,trtAuditory,trtConcentrate"
+                },
+                "ftImpeccableCraft.710": {
+                    "name": "Impeccable Crafting",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 7,
+                    "rePrerequisites": "master in Crafting, Specialty Crafting",
+                    "Trait": "trtGeneral,trtSkill"
+                },
+                "ftInventor.316": {
+                    "name": "Inventor",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 2,
+                    "rePrerequisites": "expert in Crafting",
+                    "Trait": "trtDowntime,trtGeneral,trtSkill"
+                },
+                "ftLeadClimber.693": {
+                    "name": "Lead Climber",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 2,
+                    "rePrerequisites": "Expert in Athletics",
+                    "Trait": "trtGeneral,trtSkill"
+                },
+                "ftMagicalCrafting.670": {
+                    "name": "Magical Crafting",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 2,
+                    "rePrerequisites": "expert in Crafting",
+                    "Trait": "trtGeneral,trtSkill"
+                },
+                "ftQuickClimb.717": {
+                    "name": "Quick Climb",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 7,
+                    "rePrerequisites": "master in Athletics",
+                    "Trait": "trtGeneral,trtSkill"
+                },
+                "ftQuickRepair.669": {
+                    "name": "Quick Repair",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 1,
+                    "rePrerequisites": "trained in Crafting",
+                    "Trait": "trtGeneral,trtSkill"
+                },
+                "ftQuickSqueeze.303": {
+                    "name": "Quick Squeeze",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 1,
+                    "rePrerequisites": "trained in Acrobatics",
+                    "Trait": "trtGeneral,trtSkill"
+                },
+                "ftShieldBlock.318": {
+                    "name": "Shield Block",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 1,
+                    "reTrigger": "While you have your shield raised, you would take damage from a physical attack.",
+                    "Action": "Reaction",
+                    "Trait": "trtGeneral"
+                },
+                "ftSpecialtyCraft.307": {
+                    "name": "Specialty Crafting (machinery)",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 1,
+                    "rePrerequisites": "trained in Crafting",
+                    "Trait": "trtGeneral,trtSkill"
+                },
+                "ftTamperIvt.350": {
+                    "name": "Tamper",
+                    "useInPlay": "{br}{br}{B}Critical Success{/b} Your tampering is incredibly effective. If you tampered with a weapon, the enemy takes a –2 circumstance penalty to attack rolls and damage rolls with that weapon. If you tampered with armor, the armor hampers the enemy’s movement, making the enemy flat-footed and inflicting a –10-foot penalty to its Speeds. The effect lasts until the enemy Interacts to remove it, regardless of which one you used.{br}{B}Success{/b} Your tampering is temporarily effective. As critical success, but the effect ends at the start of your next turn, even if the enemy doesn’t Interact to end it.{br}{B}Critical Failure{/b} Your tampering backfires dramatically, creating a small explosion from your own tools or gear. You take fire damage equal to your level.",
+                    "compset": "Feat",
+                    "components": "Ability",
+                    "reqLevelNet": 1,
+                    "Action": "Action1",
+                    "Trait": "clInventor,trtManipulate"
+                },
+                "grArtisanTool.657": {
+                    "name": "Machine building tools-tinkering",
+                    "compset": "GearBasic",
+                    "grBulk": 2
+                },
+                "grBackpack.537": {
+                    "name": "Backpack",
+                    "compset": "GearBasic"
+                },
+                "grBedroll.621": {
+                    "name": "Bedroll",
+                    "compset": "GearBasic",
+                    "grBulk": 0.1
+                },
+                "grFlintSteel.492": {
+                    "name": "Flint and steel",
+                    "compset": "GearBasic"
+                },
+                "grGrapplingHook.630": {
+                    "name": "Grappling hook",
+                    "compset": "GearBasic",
+                    "grBulk": 0.1
+                },
+                "grRations.510": {
+                    "name": "Rations (1 week)",
+                    "stackQty": 2,
+                    "compset": "GearBasic",
+                    "grBulk": 0.1
+                },
+                "grRepairKit.639": {
+                    "name": "Repair toolkit",
+                    "compset": "GearBasic",
+                    "grBulk": 1
+                },
+                "grRope.501": {
+                    "name": "Rope (foot)",
+                    "stackQty": 50,
+                    "compset": "GearBasic",
+                    "grBulk": 0
+                },
+                "grWaterskin.528": {
+                    "name": "Waterskin",
+                    "compset": "GearBasic",
+                    "grBulk": 0.1
+                },
+                "hrWispFet.302": {
+                    "name": "Wisp Fetchling",
+                    "compset": "Heritage",
+                    "components": "Ability",
+                    "Trait": "anFetchling"
+                },
+                "lnAklo.462": {
+                    "name": "Aklo",
+                    "compset": "Language",
+                    "Rarity": "Uncommon"
+                },
+                "lnCommon.284": {
+                    "name": "Common",
+                    "compset": "Language"
+                },
+                "lnDraconic.358": {
+                    "name": "Draconic",
+                    "compset": "Language"
+                },
+                "lnNecril.359": {
+                    "name": "Necril",
+                    "compset": "Language",
+                    "Rarity": "Uncommon"
+                },
+                "lnSakvroth.360": {
+                    "name": "Sakvroth",
+                    "compset": "Language"
+                },
+                "lnShadowtongue.279": {
+                    "name": "Shadowtongue",
+                    "compset": "Language",
+                    "Rarity": "Uncommon"
+                },
+                "mvClimb.718": {
+                    "name": "Climb Speed",
+                    "compset": "Movement"
+                },
+                "mvSpeed.283": {
+                    "name": "Speed",
+                    "compset": "Movement",
+                    "stNet": 25,
+                    "stMiscMod": 25
+                },
+                "nwFist.160": {
+                    "name": "Fist",
+                    "useInPlay": "{b}Melee Strikes{/b} +16 / +12 / +8{br}{b}Melee Damage{/b} 1d4+5 B{br}{b}Melee Crit Damage{/b} ×2",
+                    "compset": "NaturalWep",
+                    "wpReach": 5,
+                    "proLevelBonNet": 12,
+                    "ProfLevel": "Expert",
+                    "items": {
+                        "wtAgile.177": {
+                            "name": "Agile",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        },
+                        "wtFinesse.178": {
+                            "name": "Finesse",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        },
+                        "wtNonlethal.179": {
+                            "name": "Nonlethal",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        },
+                        "wtUnarmed.176": {
+                            "name": "Unarmed",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        }
+                    }
+                },
+                "ruWepPotency1.674": {
+                    "name": "Weapon potency +1",
+                    "compset": "Rune",
+                    "Trait": "trtMagical"
+                },
+                "rvFocusPoints.41": {
+                    "name": "Focus Points",
+                    "compset": "Reserves"
+                },
+                "rvHeroPoints.43": {
+                    "name": "Hero Points",
+                    "compset": "Reserves",
+                    "rvMax": 3,
+                    "rvCurrent": 1
+                },
+                "rvHitPoints.219": {
+                    "name": "Hit Points",
+                    "compset": "Reserves",
+                    "rvMax": 88,
+                    "rvCurrent": 88
+                },
+                "skAcrobatics.73": {
+                    "name": "Acrobatics",
+                    "useInPlay": "{b}Situational bonuses and penalties{/b}{br}{b}Wisp Fetchling{/b}: +1 circumstance bonus to Tumble Through",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Trained"
+                },
+                "skArcana.78": {
+                    "name": "Arcana",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Trained"
+                },
+                "skAthletics.85": {
+                    "name": "Athletics",
+                    "compset": "Skill",
+                    "proLevelBonNet": 14,
+                    "stAbScModifier": 3,
+                    "stNet": 17,
+                    "stDC": 27,
+                    "ProfLevel": "Master"
+                },
+                "skCrafting.96": {
+                    "name": "Crafting",
+                    "useInPlay": "{b}Situational bonuses and penalties{/b}{br}{b}Specialty Crafting{/b}: +2 ciscumstance bonus to Craft machinery items.{br}{b}Assurance{/b}: Forgo rolling to receive result of 24",
+                    "compset": "Skill",
+                    "proLevelBonNet": 14,
+                    "stAbScModifier": 4,
+                    "stNet": 20,
+                    "stDC": 30,
+                    "stMiscMod": 2,
+                    "ProfLevel": "Master"
+                },
+                "skDeception.101": {
+                    "name": "Deception",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stNet": 10,
+                    "stDC": 20,
+                    "ProfLevel": "Trained"
+                },
+                "skDiplomacy.106": {
+                    "name": "Diplomacy",
+                    "compset": "Skill",
+                    "stDC": 10,
+                    "ProfLevel": "Untrained"
+                },
+                "skIntimidation.110": {
+                    "name": "Intimidation",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stNet": 10,
+                    "stDC": 20,
+                    "ProfLevel": "Trained"
+                },
+                "skLore.714": {
+                    "name": "Shadow Plane Lore",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Trained"
+                },
+                "skLoreEngineering.306": {
+                    "name": "Engineering Lore",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Trained"
+                },
+                "skLoreNetherworld.281": {
+                    "name": "Netherworld Lore",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Trained"
+                },
+                "skMedicine.113": {
+                    "name": "Medicine",
+                    "compset": "Skill",
+                    "stAbScModifier": -1,
+                    "stNet": -1,
+                    "stDC": 9,
+                    "ProfLevel": "Untrained"
+                },
+                "skNature.119": {
+                    "name": "Nature",
+                    "compset": "Skill",
+                    "stAbScModifier": -1,
+                    "stNet": -1,
+                    "stDC": 9,
+                    "ProfLevel": "Untrained"
+                },
+                "skOccultism.121": {
+                    "name": "Occultism",
+                    "compset": "Skill",
+                    "proLevelBonNet": 12,
+                    "stAbScModifier": 4,
+                    "stNet": 16,
+                    "stDC": 26,
+                    "ProfLevel": "Expert"
+                },
+                "skPerformance.122": {
+                    "name": "Performance",
+                    "compset": "Skill",
+                    "stDC": 10,
+                    "ProfLevel": "Untrained"
+                },
+                "skReligion.124": {
+                    "name": "Religion",
+                    "compset": "Skill",
+                    "stAbScModifier": -1,
+                    "stNet": -1,
+                    "stDC": 9,
+                    "ProfLevel": "Untrained"
+                },
+                "skSociety.125": {
+                    "name": "Society",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Trained"
+                },
+                "skStealth.128": {
+                    "name": "Stealth",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Trained"
+                },
+                "skSurvival.132": {
+                    "name": "Survival",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": -1,
+                    "stNet": 9,
+                    "stDC": 19,
+                    "ProfLevel": "Trained"
+                },
+                "skThievery.136": {
+                    "name": "Thievery",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Trained"
+                },
+                "svFortitude.142": {
+                    "name": "Fortitude Save",
+                    "compset": "Save",
+                    "proLevelBonNet": 12,
+                    "stAbScModifier": 2,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Expert"
+                },
+                "svReflex.144": {
+                    "name": "Reflex Save",
+                    "compset": "Save",
+                    "proLevelBonNet": 12,
+                    "stAbScModifier": 4,
+                    "stNet": 16,
+                    "stDC": 26,
+                    "ProfLevel": "Expert"
+                },
+                "svWill.143": {
+                    "name": "Will Save",
+                    "compset": "Save",
+                    "proLevelBonNet": 12,
+                    "stAbScModifier": -1,
+                    "stNet": 11,
+                    "stDC": 21,
+                    "ProfLevel": "Expert"
+                },
+                "wpCrossbowHand.591": {
+                    "name": "Hand crossbow",
+                    "useInPlay": "{b}Range{/b} 60 ft.{br}{b}Ranged Strikes{/b} +16 / +11 / +6{br}{b}Ranged Damage{/b} 1d6+2 P{br}{b}Ranged Crit Damage{/b} ×2",
+                    "compset": "Weapon",
+                    "grBulk": 0.3,
+                    "grHPCurrent": 36,
+                    "wpReach": -1,
+                    "proLevelBonNet": 12,
+                    "ProfLevel": "Expert",
+                    "items": {
+                        "amBolts.607": {
+                            "name": "Bolts",
+                            "stackQty": 20,
+                            "compset": "Ammunition",
+                            "grBulk": 0.01,
+                            "trkMaximum": 20,
+                            "containment": "Installed"
+                        }
+                    }
+                },
+                "wpRapier.555": {
+                    "name": "Rapier",
+                    "useInPlay": "{b}Melee Strikes{/b} +16 / +11 / +6{br}{b}Melee Damage{/b} 1d6+5 P{br}{b}Melee Crit Damage{/b} ×2 +1d8 P",
+                    "compset": "Weapon",
+                    "grBulk": 1,
+                    "grHPCurrent": 36,
+                    "wpReach": 5,
+                    "proLevelBonNet": 12,
+                    "ProfLevel": "Expert",
+                    "items": {
+                        "wtDeadly.571": {
+                            "name": "Deadly d8",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        },
+                        "wtDisarm.572": {
+                            "name": "Disarm",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        },
+                        "wtFinesse.573": {
+                            "name": "Finesse",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        }
+                    }
+                },
+                "wpShieldBash.393": {
+                    "name": "Shield bash",
+                    "useInPlay": "{b}Melee Strikes{/b} +15 / +10 / +5{br}{b}Melee Damage{/b} 1d4+5 B{br}{b}Melee Crit Damage{/b} ×2",
+                    "compset": "Weapon",
+                    "wpReach": 5,
+                    "proLevelBonNet": 12,
+                    "ProfLevel": "Expert"
+                }
+            }
+        },
+        "actor.2": {
+            "name": "Spazia",
+            "gameValues": {
+                "actLevelNet": 8,
+                "actRace": "construct companion",
+                "actEncumbered": 11,
+                "actOverburdened": 16,
+                "actMoneyNet": "You have no money!",
+                "actSpace": 5,
+                "actReachBase": 5,
+                "actReachNet": 5,
+                "actSocietyChar": 2001,
+                "Trait": "trtConstruct"
+            },
+            "items": {
+                "Perception.119": {
+                    "name": "Perception",
+                    "compset": "Derived",
+                    "components": "Derived",
+                    "stAbScModifier": 4,
+                    "stNet": 16,
+                    "stDC": 26,
+                    "proLevelBonNet": 12,
+                    "ProfLevel": "Expert"
+                },
+                "abExplodeIvt.223": {
+                    "name": "Explode (8d6 F)",
+                    "useInPlay": "{b}Range{/b} foot{br}{b}Saving Throw{/b} DC 0 basic Reflex{br}{b}Damage{/b} 8d6 F",
+                    "compset": "Ability",
+                    "components": "Ability",
+                    "vaSave": "basic Reflex",
+                    "vaRangeText": "foot",
+                    "Action": "Action2",
+                    "Trait": "clInventor,trtFire,trtManipulate,trtUnstable"
+                },
+                "abTreatWounds.91": {
+                    "name": "Treat Wounds (2d8, DC 15)",
+                    "useInPlay": "{b}Saving Throw{/b} DC 15 Skill Check{br}{br}{B}Critical Success{/b} The target regains 4d8 Hit Points and loses the wounded condition.{br}{B}Success{/b} The target regains 2d8 Hit Points, and loses the wounded condition.{br}{B}Critical Failure{/b} The target takes 1d8 damage.{br}{b}Healing{/b} 2d8",
+                    "compset": "Ability",
+                    "components": "Ability",
+                    "vaDC": 15,
+                    "vaSave": "Skill Check",
+                    "reRequirements": "You’re wearing or holding a healer’s toolkit (page 288).",
+                    "Trait": "trtExploration,trtHealing,trtManipulate"
+                },
+                "acArmorClass.31": {
+                    "name": "Armor Class",
+                    "compset": "ArmorClass",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 6,
+                    "stNet": 26,
+                    "ProfLevel": "Trained"
+                },
+                "asCha.25": {
+                    "name": "Charisma",
+                    "compset": "AbilScore",
+                    "stNet": 10
+                },
+                "asCon.22": {
+                    "name": "Constitution",
+                    "compset": "AbilScore",
+                    "stAbScModifier": 5,
+                    "stNet": 10
+                },
+                "asDex.20": {
+                    "name": "Dexterity",
+                    "compset": "AbilScore",
+                    "stAbScModifier": 6,
+                    "stNet": 10
+                },
+                "asInt.24": {
+                    "name": "Intelligence",
+                    "compset": "AbilScore",
+                    "stAbScModifier": -4,
+                    "stNet": 10
+                },
+                "asStr.19": {
+                    "name": "Strength",
+                    "compset": "AbilScore",
+                    "stAbScModifier": 6,
+                    "stNet": 10
+                },
+                "asWis.23": {
+                    "name": "Wisdom",
+                    "compset": "AbilScore",
+                    "stAbScModifier": 4,
+                    "stNet": 10
+                },
+                "cmConstruct.183": {
+                    "name": "Construct Companion",
+                    "compset": "AncestryCompConst",
+                    "Trait": "trtConstruct"
+                },
+                "mvSpeed.234": {
+                    "name": "Speed",
+                    "compset": "Movement",
+                    "stNet": 40,
+                    "stMiscMod": 40
+                },
+                "nwPrimAtk.185": {
+                    "name": "roll",
+                    "useInPlay": "{b}Melee Strikes{/b} +16 / +11 / +6{br}{b}Melee Damage{/b} 2d8+8 S{br}{b}Melee Crit Damage{/b} ×2",
+                    "compset": "NaturalWep",
+                    "wpReach": 5,
+                    "proLevelBonNet": 10,
+                    "ProfLevel": "Trained",
+                    "items": {
+                        "wtTrip.252": {
+                            "name": "Trip",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        },
+                        "wtUnarmed.199": {
+                            "name": "Unarmed",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        },
+                        "wtVersatile.253": {
+                            "name": "Versatile S",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        }
+                    }
+                },
+                "nwSecAtkAgFiEid.203": {
+                    "name": "Heart Grab (fingernails)",
+                    "useInPlay": "{b}Melee Strikes{/b} +16 / +12 / +8{br}{b}Melee Damage{/b} 2d6+8 P{br}{b}Melee Crit Damage{/b} ×2",
+                    "compset": "NaturalWep",
+                    "wpReach": 5,
+                    "proLevelBonNet": 10,
+                    "ProfLevel": "Trained",
+                    "items": {
+                        "wtAgile.220": {
+                            "name": "Agile",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        },
+                        "wtFinesse.221": {
+                            "name": "Finesse",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        },
+                        "wtUnarmed.217": {
+                            "name": "Unarmed",
+                            "compset": "WeaponTrait",
+                            "components": "Ability",
+                            "containment": "Installed"
+                        }
+                    }
+                },
+                "rvHitPoints.172": {
+                    "name": "Hit Points",
+                    "compset": "Reserves",
+                    "rvMax": 98,
+                    "rvCurrent": 98
+                },
+                "skAcrobatics.46": {
+                    "name": "Acrobatics",
+                    "compset": "Skill",
+                    "proLevelBonNet": 12,
+                    "stAbScModifier": 6,
+                    "stNet": 18,
+                    "stDC": 28,
+                    "ProfLevel": "Expert"
+                },
+                "skArcana.51": {
+                    "name": "Arcana",
+                    "compset": "Skill",
+                    "stAbScModifier": -4,
+                    "stNet": -4,
+                    "stDC": 6,
+                    "ProfLevel": "Untrained"
+                },
+                "skAthletics.58": {
+                    "name": "Athletics",
+                    "compset": "Skill",
+                    "proLevelBonNet": 12,
+                    "stAbScModifier": 6,
+                    "stNet": 18,
+                    "stDC": 28,
+                    "ProfLevel": "Expert"
+                },
+                "skCrafting.69": {
+                    "name": "Crafting",
+                    "compset": "Skill",
+                    "stAbScModifier": -4,
+                    "stNet": -4,
+                    "stDC": 6,
+                    "ProfLevel": "Untrained"
+                },
+                "skDeception.74": {
+                    "name": "Deception",
+                    "compset": "Skill",
+                    "stDC": 10,
+                    "ProfLevel": "Untrained"
+                },
+                "skDiplomacy.79": {
+                    "name": "Diplomacy",
+                    "compset": "Skill",
+                    "stDC": 10,
+                    "ProfLevel": "Untrained"
+                },
+                "skIntimidation.83": {
+                    "name": "Intimidation",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stNet": 10,
+                    "stDC": 20,
+                    "ProfLevel": "Trained"
+                },
+                "skMedicine.86": {
+                    "name": "Medicine",
+                    "compset": "Skill",
+                    "stAbScModifier": 4,
+                    "stNet": 4,
+                    "stDC": 14,
+                    "ProfLevel": "Untrained"
+                },
+                "skNature.92": {
+                    "name": "Nature",
+                    "compset": "Skill",
+                    "stAbScModifier": 4,
+                    "stNet": 4,
+                    "stDC": 14,
+                    "ProfLevel": "Untrained"
+                },
+                "skOccultism.94": {
+                    "name": "Occultism",
+                    "compset": "Skill",
+                    "stAbScModifier": -4,
+                    "stNet": -4,
+                    "stDC": 6,
+                    "ProfLevel": "Untrained"
+                },
+                "skPerformance.95": {
+                    "name": "Performance",
+                    "compset": "Skill",
+                    "stDC": 10,
+                    "ProfLevel": "Untrained"
+                },
+                "skReligion.97": {
+                    "name": "Religion",
+                    "compset": "Skill",
+                    "stAbScModifier": 4,
+                    "stNet": 4,
+                    "stDC": 14,
+                    "ProfLevel": "Untrained"
+                },
+                "skSociety.98": {
+                    "name": "Society",
+                    "compset": "Skill",
+                    "stAbScModifier": -4,
+                    "stNet": -4,
+                    "stDC": 6,
+                    "ProfLevel": "Untrained"
+                },
+                "skStealth.101": {
+                    "name": "Stealth",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 6,
+                    "stNet": 16,
+                    "stDC": 26,
+                    "ProfLevel": "Trained"
+                },
+                "skSurvival.105": {
+                    "name": "Survival",
+                    "compset": "Skill",
+                    "proLevelBonNet": 10,
+                    "stAbScModifier": 4,
+                    "stNet": 14,
+                    "stDC": 24,
+                    "ProfLevel": "Trained"
+                },
+                "skThievery.109": {
+                    "name": "Thievery",
+                    "compset": "Skill",
+                    "stAbScModifier": 6,
+                    "stNet": 6,
+                    "stDC": 16,
+                    "ProfLevel": "Untrained"
+                },
+                "svFortitude.115": {
+                    "name": "Fortitude Save",
+                    "compset": "Save",
+                    "proLevelBonNet": 12,
+                    "stAbScModifier": 5,
+                    "stNet": 17,
+                    "stDC": 27,
+                    "ProfLevel": "Expert"
+                },
+                "svReflex.117": {
+                    "name": "Reflex Save",
+                    "compset": "Save",
+                    "proLevelBonNet": 12,
+                    "stAbScModifier": 6,
+                    "stNet": 18,
+                    "stDC": 28,
+                    "ProfLevel": "Expert"
+                },
+                "svWill.116": {
+                    "name": "Will Save",
+                    "compset": "Save",
+                    "proLevelBonNet": 12,
+                    "stAbScModifier": 4,
+                    "stNet": 16,
+                    "stDC": 26,
+                    "ProfLevel": "Expert"
+                }
+            }
+        }
+    }
+}

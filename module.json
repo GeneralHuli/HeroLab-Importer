@@ -5,7 +5,7 @@
   "author": "GeneralHuli",
   "authors": [
     {
-      "name": "Avry Whitesides (SLATE)",
+      "name": "Avry Whitesides (GeneralHuli)",
       "url": "https://github.com/GeneralHuli",
       "discord": "GeneralHuli"
     }
@@ -13,10 +13,9 @@
   "version": "0.1.1",
   "compatibility": {
     "minimum": "10",
-    "verified": "10.285",
+    "verified": "11.315",
     "maximum": "11"
   },
-  "compatibleCoreVersion": "11",
   "relationship": {
     "systems": [
       {
@@ -24,12 +23,15 @@
         "type": "system",
         "manifest": "https://github.com/foundryvtt/pf2e/releases/download/latest/system.json",
         "compatibility": {
-          "minimum": "4.0.0",
+          "minimum": "5.15.3",
           "verified": "5.15.3"
         }
       }
     ]
   },
+  "esmodules": [
+      "herolab-importer.js"
+  ],
   "styles": [],
   "packs": [],
   "url": "https://github.com/GeneralHuli/HeroLab-Importer",
