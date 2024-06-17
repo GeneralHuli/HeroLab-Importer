@@ -4,7 +4,7 @@ import CONSTANTS from "../data/global.js"
 
 const hloiVer = "0.2.0"
 
-let hlodebug = true;
+let hlodebug = false;
 const color1='color: #7bf542';  //bright green
 const color2='color: #d8eb34'; //yellow green
 const color3='color: #ffffff'; //white
@@ -22,7 +22,7 @@ Hooks.on('ready', async function() {
   if (game.system.id!="pf2e") {
     console.log("%cHeroLab Importer | %cWrong game system. %cNot enabling.",color1,color5,color4);
   } else {
-    console.log("%cHeroLab Importer | %cinitializing",color1,color4);
+    //console.log("%cHeroLab Importer | %cinitializing",color1,color4);
       game.settings.register('herolab-importer', 'userToken', {
         name : "User Token",
         hint : "Please enter your personal user token. A user token allows external tools (like this one) to access the Hero Lab server and perform export operations.\
@@ -92,6 +92,7 @@ Hooks.on('renderActorSheet', function(obj, html){
   } else {
     // Only inject the link if the actor is of type "character" and the user has permission to update it
       const actor = obj.actor;
+      //TODO: I don't like that this runs each rendor
       if (hlodebug) {
         console.log("%cHeroLab Importer | %cPF2e System Version: herolab-importer actor type: " + actor.type,color1,color4);
         console.log("%cHeroLab Importer | %cCan user modify: " + actor.canUserModify(game.user, "update"),color1,color4);
@@ -128,11 +129,12 @@ export class HeroLabImporter {
   }
 
   async beginHeroLabImport(targetActor,userToken) {
-    HeroLabImporter.log(false,'Starting HeroLabImport')
+    HeroLabImporter.log(this.hlodebug,'Starting HeroLabImport')
 
     let importCharacter = false;
     let elementToken = game.settings.get('herolab-importer', 'elementToken');
 
+    //Dialog to get starting information
     await Dialog.wait({
       title: `Herolab Online Import`,
       content: `
@@ -221,6 +223,7 @@ export class HeroLabImporter {
       rejectClose: false
     });
 
+    //Get the export
     if(importCharacter) {
       characterExport = await this.getHeroLabExport(userToken, elementToken);
 
@@ -252,9 +255,10 @@ export class HeroLabImporter {
   async getHeroLabExport(userToken, elementToken) {
     let charExport;
 
-    HeroLabImporter.log(false,'Getting export from Hero Lab Online');
+    HeroLabImporter.log(this.hlodebug,'Getting export from Hero Lab Online');
     const accessToken = await this.getHeroLabAccessToken(userToken);
 
+    //Fetch the character Export
     await foundry.utils.fetchJsonWithTimeout("https://api.herolab.online/v1/character/get", {
       method: "POST",
       body: JSON.stringify({
@@ -272,7 +276,7 @@ export class HeroLabImporter {
         console.error("%cHeroLab Importer | %cUnable to import HeroLab JSON! Error: "+error,color1,color4)
       });
 
-    HeroLabImporter.log(false, "Character JSON: "+ charExport);
+    HeroLabImporter.log(this.hlodebug, "Character JSON: "+ charExport);
 
     if(charExport?.error) {
       console.error("%cHeroLab Importer | %cUnable to import HeroLab JSON! Error: "+charExport.error,color1,color4)
@@ -286,7 +290,9 @@ export class HeroLabImporter {
   }
 
   async getHeroLabAccessToken(userToken) {
-    HeroLabImporter.log(false,'Getting access token from Hero Lab Online ');
+    HeroLabImporter.log(this.hlodebug,'Getting access token from Hero Lab Online ');
+
+    //Fetch the access token
     const response = await foundry.utils.fetchJsonWithTimeout("https://api.herolab.online/v1/access/acquire-access-token", {
       method: "POST",
       body: JSON.stringify({
@@ -310,12 +316,12 @@ export class HeroLabImporter {
     if(!(targetActor.name === characterActorExport.name)) {
       targetActor.update({'name': characterActorExport.name}, {render: false});
       targetActor.update({'prototypeToken.name': characterActorExport.name}, {render: false});
-      HeroLabImporter.log(false,'Updating Actor Name to '+ characterActorExport.name);
+      HeroLabImporter.log(this.hlodebug,'Updating Actor Name to '+ characterActorExport.name);
     }
 
     //Update Level
     await targetActor.update({"system.details.level.value": characterActorExport.gameValues.actLevelNet});
-    HeroLabImporter.log(false,'Updating Actor Level to '+ characterActorExport.gameValues.actLevelNet);
+    HeroLabImporter.log(this.hlodebug,'Updating Actor Level to '+ characterActorExport.gameValues.actLevelNet);
 
     //Update Class
     if(exportItems['class'][0]?.name) {
@@ -379,7 +385,7 @@ export class HeroLabImporter {
 
 
     //List all the things we couldn't add
-    HeroLabImporter.log(false, "Couldn't add these items: " + this.itemsNotAdded);
+    HeroLabImporter.log(this.hlodebug, "Couldn't add these items: " + this.itemsNotAdded);
     this.itemsNotAdded = [];
 
     targetActor.update({
@@ -394,6 +400,8 @@ export class HeroLabImporter {
   }
 
   async findItem(packName,itemName) {
+    //Locates an item in the packName pack. Goes for a close match and chooses the best one.
+
     let pack = game.packs.get(packName);
 
     let fuse = new Fuse([], {
@@ -407,12 +415,13 @@ export class HeroLabImporter {
     }
     let results = fuse.search(itemName);
     const myItem = await pack.getDocument(results[0]?.item._id)
-    //console.log("myItem is: ",myItem);
 
     return myItem;
   }
 
   getItemsFromActor(characterActorExport) {
+    //Separate out all the items from the export into a managable structure.
+
     let items = {'ability':[],'armor':[],'abilityScore':[],'class':[],'deity':[],'feat':[],'focus':[],
                   'gear':[],'heritage':[],'language':[],'movement':[],'naturalWeapon':[],'reserve':[],
                   'skill':[],'save':[],'staff':[],'spell':[],'spellbook':[],'weapon':[]}
@@ -490,8 +499,10 @@ export class HeroLabImporter {
         let update = ability?.stAbScModifier || 0;
         targetActor.update({[`system.abilities.${CONSTANTS.ABILITY_LOOKUP[ability.name]}.mod`]: update});
       }
-    }
-    //Abbilities by boosting
+    };
+    //Abbilities by boosting 
+    //TODO: This doesn't work yet.
+    /*
     else {
       const boosts = {
         "Charisma": 0,
@@ -502,9 +513,12 @@ export class HeroLabImporter {
         "Wisdon": 0,
       }
     };
+    */
   }
 
   async updateActorLanguages(targetActor, exportLanguage) {
+    //Gets the languages and filter's out the ones they already have
+
     const mergeLanguages = true;
     const ancestryLanguages = targetActor.ancestry?.system.languages?.value || [];
 
@@ -518,28 +532,35 @@ export class HeroLabImporter {
 
     
     await targetActor.update({"system.details.languages.value": intLanguages}, {render: false});
-    HeroLabImporter.log(false, "Updating Languages: " + intLanguages);
+    HeroLabImporter.log(this.hlodebug, "Updating Languages: " + intLanguages);
   }
 
   async updateActorSkills(targetActor, exportSkill) {
+    //Updates all the skill proficiency values
 
+    HeroLabImporter.log(this.hlodebug, "Updating the skills")
     const exportLore = []
     for(let [key, skill] of exportSkill) {
+      //Get the Lore skills for later
       if(key.startsWith("skLore")) {
         exportLore.push(skill);
         continue;
       }
 
+      //Set the skill proficiency. Foundry does the rest for me!
       let setting = `system.skills.${skill.name.toLowerCase()}.rank`;
       await targetActor.update({[setting]: CONSTANTS.PROF_LOOKUP[skill.ProfLevel]}, {render: false});
     }
 
+    //Remove existing Lore, because I guess it easier? Why did I do this?
+    //TODO: Can we, maybe, just check if they already have the Lore?
     for(const [key, skill] of Object.entries(targetActor.system.skills)) {
       if(skill.lore) {
         targetActor.deleteEmbeddedDocuments('Item', [skill.itemID]);
       };
     };
 
+    //Add the Lore skills
     var lores = [];
     for(const lore of exportLore) {
       const data = {
@@ -564,13 +585,15 @@ export class HeroLabImporter {
     const newLores = foundry.utils.deepClone(lores);
 
     await targetActor.createEmbeddedDocuments("Item", newLores, {keepId: true, render: false});
-    HeroLabImporter.log(false, "Updating Lore");
+    HeroLabImporter.log(this.hlodebug, "Updating Lore");
   }
 
   async updateActorFeats(targetActor, exportFeat) {
     const featItems = [];
     const slugs = [];
     const slots = {'ancestry':[], 'class':[], 'archetype':[], 'skill':[], 'general':[]};
+
+    HeroLabImporter.log(this.hlodebug, "Updating Feats")
 
     //Find all the Feats from Compendium
     for(let [key, feat] of Object.entries(exportFeat)) {
@@ -612,17 +635,20 @@ export class HeroLabImporter {
     let filteredFeats = featItems.filter((l) => !slugs.includes(l.system.slug));
     filteredFeats.sort((a,b) => a.system.level.value - b.system.level.value);
 
+    //Add the feats they need
+    //TODO: Put feats in better locations
+    //TODO: Auto selection
     for(let [key, value] of Object.entries(filteredFeats)) {
       let slot = slots[value.system.category].shift()
       await targetActor.feats.insertFeat(value, {groupId: value.system.category, slotId: slot});
     }
 
     //TODO: I should revisit Feats to try and organize a little better
-    HeroLabImporter.log(false, "Bro...I did what I could for the feats.");
+    HeroLabImporter.log(this.hlodebug, "Bro...I did what I could for the feats.");
   }
 
   async updateActorEquipment(targetActor, exportGear) {
-    //TODO: Settings!
+    //Adds all gear
     let refreshAllEquipment = true;
 
     //Clear all items from Actor
@@ -632,20 +658,26 @@ export class HeroLabImporter {
       targetActor.deleteEmbeddedDocuments("Item",items, {render: false});
     }
 
+    HeroLabImporter.log(this.hlodebug, "Importing Gear")
     await this.addActorItems(targetActor, exportGear)
 
   }
 
   async updateActorArmor(targetActor, exportArmor) {
+    //Adds the armor
+    HeroLabImporter.log(this.hlodebug, "Importing Armor")
     this.addActorItems(targetActor, exportArmor);
   }
 
   async updateActorWeapons(targetActor, exportWeapon) {
+    //Adds the weapons
+    HeroLabImporter.log(this.hlodebug, "Importing weapons")
     exportWeapon = exportWeapon.filter((l) => l?.grBulk)
     await this.addActorItems(targetActor, exportWeapon);
   }
 
   async addActorItems(targetActor, exportGear, container=undefined) {
+    //Adds gear with ?container
     var gearItem;
     
     for (var [key, value] of Object.entries(exportGear)) {
@@ -673,6 +705,7 @@ export class HeroLabImporter {
   }
 
   async updateItemQuantity(targetActor, addedItem, count) {
+    //Update the quatity. Some items, like rope, are exported weirdly, so we exclude them.
     const excludedItems = new Map([
       ['Rope', 50],
     ]);
@@ -681,12 +714,14 @@ export class HeroLabImporter {
       count = count/excludedItems.get(addedItem.name);
     }
 
-    //await targetActor.updateEmbeddedDocuments('Item', [{_id: addedItem.id, "system.quantity": count}], {render: false});
     addedItem.update({"system.quantity": count});
   }
 
   async updateActorSpells(targetActor,exportItems) {
+    //Adds the spells
     const traditions = {}
+
+    HeroLabImporter.log(this.hlodebug, "Importing Spells")
 
     //Get spells by traditions
     for(let [key,spell] of Object.entries(exportItems['spell'])) {
@@ -732,6 +767,7 @@ export class HeroLabImporter {
         if(!spellcastingEntry) spellcastingEntry = await this.createSpellcastingEntry(targetActor, `${dedication[0]} Spells`, tradition.toLowerCase(), dedication[1].type, dedication[1].ability);
       }
       
+      //Add the spells to the spellcasting entry
       for(let [key,spell] of Object.entries(spells)) {
         let spellItem = await this.findItem('pf2e.spells-srd', itemRename(spell.name))
         let foundSpell = spellcastingEntry.getName(spellItem.name)
@@ -745,16 +781,19 @@ export class HeroLabImporter {
   }
 
   async updateFocusSpells(targetActor, exportItems) {
+    //Add focus spells
     for(let [key, spell] of Object.entries(exportItems['focus'])) {
       let tradition = spell.Trait.split(',').find(value => /^trd/.test(value)).substring(3)
       let cl = spell.Trait.split(',').find(value => /^cl/.test(value)).substring(2)
       let focusClass = CONSTANTS.CLASS_CASTER_TYPE[cl.toLowerCase()]
 
+      //Check for existing entry
       let spellcastingEntry = this.existingSpellcastingEntry(targetActor.spellcasting.collections.entries(), focusClass.ability, 'focus', tradition);
       if(!spellcastingEntry) spellcastingEntry = await this.createSpellcastingEntry(targetActor, `${cl} Focus Spells`, tradition.toLowerCase(), 'focus', focusClass.ability);
 
       let spellItem = await this.findItem('pf2e.spells-srd', itemRename(spell.name))
 
+      //If they don't have it, give it to them
       if(!spellcastingEntry.getName(spellItem.name)) {
         spellcastingEntry.addSpell(spellItem, spell.spLevelNet);
       }
@@ -762,6 +801,7 @@ export class HeroLabImporter {
   }
 
   existingSpellcastingEntry(spellcastingEntries, ability, prepared, tradition) {
+    //Check for existing spellcasting entry
     for(let [key, value] of spellcastingEntries) {
       let spEntry = value.entry.system;
           if(spEntry?.ability.value == ability.substring(0,3) && spEntry?.prepared.value == prepared && spEntry?.tradition.value == tradition.toLowerCase())
@@ -771,7 +811,8 @@ export class HeroLabImporter {
   }
 
   async createSpellcastingEntry(targetActor, name, tradition, prepared, ability) {
-    
+    //Create a spellcasting entry
+
     const createData = {
       type: 'spellcastingEntry',
       name: name,
