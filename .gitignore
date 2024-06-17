@@ -1,3 +1,5 @@
 .vscode
 ignore/
 jsconfig.json
+.gitignore
+jsconfig.json

@@ -1,1 +1,34 @@
-# HeroLabs-Importer
+# Hero Labs Online PF2e Importer
+
+This FoundryVTT module imports Pathfinder 2E characters from Hero Lab Online.
+
+Currently, it has basic funtionality with improvements planned along the way.
+Built with heavy inspiration from zarmstrong's [Herolab Online PF2e Import Tool](https://github.com/zarmstrong/hlo-importer).
+
+# Features
+
+## Class, Ancestry, Heritage, Background
+Will work for all official content in the Pathfinder 2e compediums. Options that are prompted in FoundryVTT must be manually selected at time of import.
+
+## Attributes
+Imports attributes as "Manual Entry" only. Hoping that Lone Wolf is able to expand their export to include boosts.
+
+## Equipment
+Imports equipment correctly into containers, with everything unequiped. Uses a best match to the Pathfinder 2e compendiums. Has minor support for Legacy items, if you have the PF2e Legacy Content module installed. It is currently all-or-nothing, so recommended for new imports only! Probably will not work well with custom items.
+
+## Spells
+Imports spells into spellcasting entries. Uses a best match to the Pathfinder 2e compendiums. Has minor support for Legacy items, if you have the PF2e Legacy Content module installed. Will detect if you already have the spell, and only import new spells. Does NOT remove spells, if you have got rid of them. Works with Dedication Feats for additional spellcasting entries as well as focus spells, but if your additional spells use the same tradition that your base class *can* use, it will prefer your base class.
+
+## Skills
+The only thing that seems to work perfectly and as expected right now. Lore skills included.
+
+# Issues/Future Plans
+
+- If an added item would prompt for a selection, it currently cannot choose this for you. I would like to work on automagically choosing options. Limitations on the information given from Hero Labs Online may make this difficult.
+- Attributes can only be "Manual Entry". Hero Labs Online does not, as of yet, provide information on boosts.
+- Character descriptors (Hair/Eyes etc.) are not exported, so I can't import them.
+- Equipment in the export are not listed as equipted or now, so I can't equipt them for you.
+- Trying to compare equipment that you already have vs. what is imported is a nightmare. Maybe in the future I can tackle this, but there are just too many variables.
+- Spells imported do not contain information on which spellcasting list they come from, so I can't know for sure where they should go. Worst case right now is you will have to move them accordingly, after importing.
+- Feats are the same as the spells. I can only guess on the feat slot by the traits and the level of the feat.
+- Hero Labs Online does not export recipes. Hopefully this will change in the future.
