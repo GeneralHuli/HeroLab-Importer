@@ -2,7 +2,6 @@
   "id": "herolab-importer",
   "title": "Herolab Online PF2e Import Tool",
   "description": "This module adds a button to the top of player character sheets allowing them to quickly import their character from Herolab Online.",
-  "author": "GeneralHuli",
   "authors": [
     {
       "name": "Avry Whitesides (GeneralHuli)",
@@ -13,10 +12,10 @@
   "version": "0.1.1",
   "compatibility": {
     "minimum": "10",
-    "verified": "11.315",
-    "maximum": "11"
+    "verified": "12.325",
+    "maximum": "12"
   },
-  "relationship": {
+  "relationships": {
     "systems": [
       {
         "id": "pf2e",
@@ -30,7 +29,7 @@
     ]
   },
   "esmodules": [
-      "herolab-importer.js"
+      "src/app/herolab-importer.js"
   ],
   "styles": [],
   "packs": [],
