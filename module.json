@@ -35,13 +35,9 @@
   "packs": [],
   "url": "https://github.com/GeneralHuli/HeroLab-Importer",
   "manifest": "https://raw.githubusercontent.com/GeneralHuli/HeroLab-Importer/main/module.json",
-  "download": "https://github.com/GeneralHuli/HeroLab-Importer/archive/refs/tags/v.0.2.0.zip",
+  "download": "https://github.com/GeneralHuli/HeroLab-Importer/archive/refs/tags/v.0.2.2.zip",
   "license": "MIT",
   "readme": "https://raw.githubusercontent.com/GeneralHuli/HeroLab-Importer/main/README.md",
   "bugs": "https://github.com/GeneralHuli/HeroLab-Importer/issues",
-  "flags": {
-    "manifestPlusVersion": "1.2.0",
-    "allowBugReporter": true
-  },
   "changelog": "https://github.com/GeneralHuli/HeroLab-Importer/main/CHANGELOG.md"  
 }
