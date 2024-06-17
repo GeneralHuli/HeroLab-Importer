@@ -2,7 +2,7 @@ import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.mjs';
 import { itemRename } from "../data/remaster.js"
 import CONSTANTS from "../data/global.js"
 
-const hloiVer = "0.2.0"
+const hloiVer = "0.2.1"
 
 let hlodebug = false;
 const color1='color: #7bf542';  //bright green
