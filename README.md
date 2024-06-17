@@ -38,6 +38,7 @@ The only thing that seems to work perfectly and as expected right now. Lore skil
 - Spells imported do not contain information on which spellcasting list they come from, so I can't know for sure where they should go. Worst case right now is you will have to move them accordingly, after importing.
 - Feats are the same as the spells. I can only guess on the feat slot by the traits and the level of the feat.
 - Hero Labs Online does not export recipes. Hopefully this will change in the future.
+- Companions/Familiars. This shouldn't be too bad, but I'll need time to think it through.
 
 ## Addendum
 
