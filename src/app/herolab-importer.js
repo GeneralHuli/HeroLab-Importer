@@ -2,7 +2,7 @@ import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.mjs';
 import { itemRename } from "../data/remaster.js"
 import CONSTANTS from "../data/global.js"
 
-const hloiVer = "0.2.1"
+const hloiVer = "0.2.2"
 
 let hlodebug = false;
 const color1='color: #7bf542';  //bright green
@@ -283,7 +283,6 @@ export class HeroLabImporter {
       return undefined;
     }
     else {
-      window.charExport = charExport.export;
       return charExport.export;
     }
     
@@ -487,8 +486,6 @@ export class HeroLabImporter {
       }
     }
 
-    window.exportItems = items;
-    console.log(items);
     return items;
   }
 
