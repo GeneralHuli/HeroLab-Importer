@@ -9,7 +9,7 @@
       "discord": "GeneralHuli"
     }
   ],
-  "version": "0.2.2",
+  "version": "0.2.3",
   "compatibility": {
     "minimum": "10",
     "verified": "12.327",
@@ -35,7 +35,7 @@
   "packs": [],
   "url": "https://github.com/GeneralHuli/HeroLab-Importer",
   "manifest": "https://raw.githubusercontent.com/GeneralHuli/HeroLab-Importer/main/module.json",
-  "download": "https://github.com/GeneralHuli/HeroLab-Importer/archive/refs/tags/v.0.2.2.zip",
+  "download": "https://github.com/GeneralHuli/HeroLab-Importer/archive/refs/tags/v.0.2.3.zip",
   "license": "MIT",
   "readme": "https://raw.githubusercontent.com/GeneralHuli/HeroLab-Importer/main/README.md",
   "bugs": "https://github.com/GeneralHuli/HeroLab-Importer/issues",
