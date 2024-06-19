@@ -1,4 +1,4 @@
-.vscode
+.vscode/
 ignore/
 jsconfig.json
 .gitignore
