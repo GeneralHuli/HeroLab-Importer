@@ -663,8 +663,11 @@ export class HeroLabImporter {
     for(let [key, value] of Object.entries(featItems)) {
       //If they don't have the feat, add it
       if(!targetActor.itemTypes.feat.find(feat => feat.system.slug === value.system.slug)) {
-        let slot = slots[value.system.category].shift()
-        await targetActor.feats.insertFeat(value, {groupId: value.system.category, slotId: slot});
+        let category = value.system.category
+        if(value.system.traits.value.includes('archetype'))
+          category = 'archetype'
+        let slot = slots[category].shift();
+        await targetActor.feats.insertFeat(value, {groupId: category, slotId: slot});
       }
     }
   
