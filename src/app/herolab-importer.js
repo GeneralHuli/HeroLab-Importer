@@ -129,6 +129,7 @@ export class HeroLabImporter {
   }
 
   async beginHeroLabImport(targetActor,userToken) {
+    window.testActor = targetActor;
     HeroLabImporter.log(this.hlodebug,'Starting HeroLabImport')
 
     let importCharacter = false;
@@ -278,6 +279,8 @@ export class HeroLabImporter {
 
     HeroLabImporter.log(this.hlodebug, "Character JSON: "+ charExport);
 
+    window.charExport = charExport;
+
     if(charExport?.error) {
       console.error("%cHeroLab Importer | %cUnable to import HeroLab JSON! Error: "+charExport.error,color1,color4)
       return undefined;
@@ -326,8 +329,23 @@ export class HeroLabImporter {
     if(exportItems['class'][0]?.name) {
       let pf2eClass = await this.findItem("pf2e.classes",exportItems['class'][0].name);
       this.classTrait = exportItems['class'][0].Trait;
-      if(!(pf2eClass?.name === targetActor.class?.name))
+      
+      if(!(pf2eClass?.name === targetActor.class?.name)) {
+        const choiceHook = Hooks.on('renderChoiceSetPrompt', function(choicePrompt) {
+          if(HeroLabImporter.checkChoiceSetPrompt(exportItems, choicePrompt)) {
+            choicePrompt.close();
+          }
+        });
+        
         await targetActor.createEmbeddedDocuments('Item',[pf2eClass.toObject()], {render: false});
+
+        
+        for(let [k, choice] of Object.entries(ui.windows)) {
+          if(choice?.selection) choice.close();
+        }
+
+        Hooks.off('renderChoiceSetPrompt', choiceHook);
+      }
     }
 
     //Update Background
@@ -416,6 +434,31 @@ export class HeroLabImporter {
     const myItem = await pack.getDocument(results[0]?.item._id)
 
     return myItem;
+  }
+
+  static checkChoiceSetPrompt(exportItems, choicePrompt) {
+
+    for(let [index,choice] of Object.entries(choicePrompt.choices)) {
+      for(let [k, ability] of Object.entries(exportItems['ability'])) {
+        //if(choice.label.startsWith(ability.name)) {
+        //I don't like this
+        if(choice.label === ability.name) {
+          choicePrompt.selection = choicePrompt.choices.at(Number(index));
+
+          exportItems['ability'].splice(k,1);
+          return true;
+        }
+      }
+      for(let [k, feat] of Object.entries(exportItems['feat'])) {
+        if(feat.name.startsWith(choice.label)) {
+          choicePrompt.selection = choicePrompt.choices.at(Number(index));
+
+          exportItems['feat'].splice(k,1);
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   getItemsFromActor(characterActorExport) {
@@ -592,6 +635,13 @@ export class HeroLabImporter {
 
     HeroLabImporter.log(this.hlodebug, "Updating Feats")
 
+    //Get empty feat slots
+    for(let [key, value] of targetActor.feats.entries()) {
+      for(let [k, v] of Object.entries(value.slots)) {
+        if(!v?.feat) {slots[key].push(k)}
+      }
+    }
+
     //Find all the Feats from Compendium
     for(let [key, feat] of Object.entries(exportFeat)) {
       let newFeat = await this.findItem("pf2e.feats-srd", feat.name);
@@ -608,39 +658,16 @@ export class HeroLabImporter {
       }
     };
 
-    //Find all the existing feats from target actor
-    //Also, get empty slots
-    for(let [key, value] of Object.entries(targetActor.feats?.bonus.feats)) {
-      slugs.push(value.feat.system.slug);
-    };
-    for(let [key, value] of targetActor.feats.entries()) {
-      for(let [k, v] of Object.entries(value.feats)) {
-        if(v.feat?.system) {slugs.push(v.feat.system.slug);};
-        if(v.feat?.grants.length > 0) {
-          for(let [f, feat] of Object.entries(v.feat?.grants)) {
-            slugs.push(feat.system.slug);
-          };
-        };
-      };
-
-      for(let [k, v] of Object.entries(value.slots)) {
-        if(!v?.feat) {slots[key].push(k)}
+    //Sort feats by level
+    featItems.sort((a,b) => a.system.level.value - b.system.level.value);
+    for(let [key, value] of Object.entries(featItems)) {
+      //If they don't have the feat, add it
+      if(!targetActor.itemTypes.feat.find(feat => feat.system.slug === value.system.slug)) {
+        let slot = slots[value.system.category].shift()
+        await targetActor.feats.insertFeat(value, {groupId: value.system.category, slotId: slot});
       }
-    };
-
-    //Filter out the feats they already have
-    let filteredFeats = featItems.filter((l) => !slugs.includes(l.system.slug));
-    filteredFeats.sort((a,b) => a.system.level.value - b.system.level.value);
-
-    //Add the feats they need
-    //TODO: Put feats in better locations
-    //TODO: Auto selection
-    for(let [key, value] of Object.entries(filteredFeats)) {
-      let slot = slots[value.system.category].shift()
-      await targetActor.feats.insertFeat(value, {groupId: value.system.category, slotId: slot});
     }
-
-    //TODO: I should revisit Feats to try and organize a little better
+  
     HeroLabImporter.log(this.hlodebug, "Bro...I did what I could for the feats.");
   }
 
