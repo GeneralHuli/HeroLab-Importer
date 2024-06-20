@@ -121,6 +121,7 @@ export class HeroLabImporter {
   constructor(hlodebug) {
     this.hlodebug = hlodebug;
     this.itemsNotAdded = [];
+    this.spellsNotAdded = [];
     this.classTrait = '';
     this.importEquipment = game.settings.get('herolab-importer', 'importEquipment');
     this.importSpells = game.settings.get('herolab-importer', 'importSpells');
@@ -221,7 +222,10 @@ export class HeroLabImporter {
         },
       },
       default: "yes",
-      rejectClose: false
+      close: html => {
+        HeroLabImporter.log(hlodebug, "Cancelling Importer.");
+        return true;
+      }
     });
 
     //Get the export
@@ -321,6 +325,36 @@ export class HeroLabImporter {
       HeroLabImporter.log(this.hlodebug,'Updating Actor Name to '+ characterActorExport.name);
     }
 
+    //Set Ancestry
+    if(characterActorExport.gameValues.actRace) {
+      let pf2eAncestry = await this.findItem("pf2e.ancestries",characterActorExport.gameValues.actRace);
+      //Can't find Ancestry? Try again with only first word
+      if(!pf2eAncestry) pf2eAncestry = await this.findItem("pf2e.ancestries",characterActorExport.gameValues.actRace.split(" ")[0]);
+      if(!(pf2eAncestry?.name === targetActor.ancestry?.name))
+        await targetActor.createEmbeddedDocuments('Item',[pf2eAncestry], {render: false});
+    }
+
+    //Update Background
+    if(characterActorExport.gameValues?.actBackgroundText) {
+      let pf2eBackground = await this.findItem("pf2e.backgrounds",characterActorExport.gameValues.actBackgroundText);
+      if(!(pf2eBackground?.name === targetActor.background?.name))
+        await targetActor.createEmbeddedDocuments('Item',[pf2eBackground.toObject()], {render: false});
+    }
+
+    //Update Heritage
+    if(exportItems['heritage'][0]?.name) {
+      let pf2eHeritage = await this.findItem("pf2e.heritages",exportItems['heritage'][0].name);
+      if(!(pf2eHeritage?.name === targetActor.heritage?.name))
+        await targetActor.createEmbeddedDocuments('Item',[pf2eHeritage.toObject()], {render: false});
+    }
+
+    //Update Deity
+    if(exportItems['deity'][0]?.name) {
+      let pf2eDeity = await this.findItem("pf2e.deities",exportItems["deity"][0].name)
+      if(!(pf2eDeity?.name === targetActor.deity?.name))
+        await targetActor.createEmbeddedDocuments('Item',[pf2eDeity.toObject()], {render: false});
+    }
+
     //Update Level
     await targetActor.update({"system.details.level.value": characterActorExport.gameValues.actLevelNet});
     HeroLabImporter.log(this.hlodebug,'Updating Actor Level to '+ characterActorExport.gameValues.actLevelNet);
@@ -347,37 +381,9 @@ export class HeroLabImporter {
         Hooks.off('renderChoiceSetPrompt', choiceHook);
       }
     }
-
-    //Update Background
-    if(characterActorExport.gameValues?.actBackgroundText) {
-      let pf2eBackground = await this.findItem("pf2e.backgrounds",characterActorExport.gameValues.actBackgroundText);
-      if(!(pf2eBackground?.name === targetActor.background?.name))
-        await targetActor.createEmbeddedDocuments('Item',[pf2eBackground.toObject()], {render: false});
-    }
-
-    //Update Heritage
-    if(exportItems['heritage'][0]?.name) {
-      let pf2eHeritage = await this.findItem("pf2e.heritages",exportItems['heritage'][0].name);
-      if(!(pf2eHeritage?.name === targetActor.heritage?.name))
-        await targetActor.createEmbeddedDocuments('Item',[pf2eHeritage.toObject()], {render: false});
-    }
-
-    //Update Deity
-    if(exportItems['deity'][0]?.name) {
-      let pf2eDeity = await this.findItem("pf2e.deities",exportItems["deity"][0].name)
-      if(!(pf2eDeity?.name === targetActor.deity?.name))
-        await targetActor.createEmbeddedDocuments('Item',[pf2eDeity.toObject()], {render: false});
-    }
     
     //Update Actor Attributes
     await this.updateActorAttributes(targetActor, exportItems['abilityScore']);
-
-    //Set Ancestry
-    if(characterActorExport.gameValues.actRace) {
-      let pf2eAncestry = await this.findItem("pf2e.ancestries",characterActorExport.gameValues.actRace);
-      if(!(pf2eAncestry?.name === targetActor.ancestry?.name))
-        await targetActor.createEmbeddedDocuments('Item',[pf2eAncestry], {render: false});
-    }
 
     //Update Actor Equipment
     if(this.importEquipment) await this.updateActorEquipment(targetActor, exportItems['gear']);
@@ -388,14 +394,14 @@ export class HeroLabImporter {
     //Update Actor Armor
     if(this.importEquipment) await this.updateActorArmor(targetActor, exportItems['armor']);
 
-    //Update Actor Skills
-    if(this.importSkills) await this.updateActorSkills(targetActor, exportItems['skill']);
-
     //Set Languages
     await this.updateActorLanguages(targetActor, exportItems['language']);
 
     //Update Actor Feats
     if(this.importFeats) await this.updateActorFeats(targetActor, exportItems['feat']);
+
+    //Update Actor Skills
+    if(this.importSkills) await this.updateActorSkills(targetActor, exportItems['skill']);
 
     //Update Actor Spells
     if(this.importSpells) await this.updateActorSpells(targetActor, exportItems);
@@ -747,25 +753,78 @@ export class HeroLabImporter {
   async updateActorSpells(targetActor,exportItems) {
     //Adds the spells
     const traditions = {}
+    const innateTraditions = {}
 
     HeroLabImporter.log(this.hlodebug, "Importing Spells")
 
     //Get spells by traditions
     for(let [key,spell] of Object.entries(exportItems['spell'])) {
       let tradition = undefined
-      if((tradition = spell.Trait.split(',').find(value => /^trd/.test(value)).substring(3))  && spell?.useInPlay) {
-        if(tradition in traditions) {
-          traditions[tradition].push(spell);
+      if((tradition = spell.Trait.split(',').find(value => /^trd/.test(value))?.substring(3))  && spell?.useInPlay) {
+        if(spell?.SpellHelper === "Innate") {
+          if(tradition in innateTraditions) {
+            innateTraditions[tradition].push(spell);
+          }
+          else {
+            innateTraditions[tradition] = [];
+            innateTraditions[tradition].push(spell);
+          }
         }
         else {
-          traditions[tradition] = [];
-          traditions[tradition].push(spell);
+          if(tradition in traditions) {
+            traditions[tradition].push(spell);
+          }
+          else {
+            traditions[tradition] = [];
+            traditions[tradition].push(spell);
+          }
         }
       }
+      else this.spellsNotAdded.push(spell);
     }
 
-    //Get the defaults for the class
-    let actorClass = CONSTANTS.CLASS_CASTER_TYPE[exportItems.class[0].name.toLowerCase()];
+    //Get defaults for Class
+    let actorClass = CONSTANTS.CLASS_CASTER_TYPE[exportItems.class[0].name.toLowerCase()]
+    await this.updateFocusSpells(targetActor, exportItems);
+    await this.updateSpellcastingEntry(targetActor, traditions, actorClass);
+    await this.updateInnateSpells(targetActor, innateTraditions, actorClass);
+
+    console.log(this.spellsNotAdded)
+    console.log(traditions)
+    console.log(innateTraditions)
+  }
+
+  async updateInnateSpells(targetActor, traditions, actorClass) {
+    var spellcastingEntry;
+    //Loop through the traditions from export
+    for(let [tradition,spells] of Object.entries(traditions)) {
+
+      //See if they have a tradition that matches their class spellcasting abilities
+      //See if they already have this tradition
+      spellcastingEntry = this.existingSpellcastingEntry(targetActor.spellcasting.collections.entries(), actorClass.ability, 'innate', tradition);
+      //They don't have one, so make it
+      if(!spellcastingEntry) spellcastingEntry = await this.createSpellcastingEntry(targetActor, `Innate Spells`, tradition.toLowerCase(), 'innate', actorClass.ability);
+      
+      //Add the spells to the spellcasting entry
+      for(let [key,spell] of Object.entries(spells)) {
+        let spellItem = await this.findItem('pf2e.spells-srd', itemRename(spell.name))
+        //Can't find spell, try without ()
+        if(!spellItem) spellItem = await this.findItem("pf2e.spells-srd", itemRename(spell.name.replace(/\s*\(.*?\)\s*/g, '')));
+
+        let foundSpell = spellcastingEntry.getName(spellItem.name)
+        if(foundSpell?.system.location.heightenedLevel != spell.spLevelNet && !foundSpell?.system.traits.value.includes('cantrip')) {
+          let newSpell = await spellcastingEntry.addSpell(spellItem, {groupId: spell.spLevelNet });
+          newSpell.update({'system.location.uses.max': spell?.trkMaximum, 'system.location.uses.min': spell?.trkMaximum}, {render: false});
+        }
+      }
+      
+      spellcastingEntry.entry.update({'system.showSlotlessLevels.value': false});
+    }
+  }
+
+  async updateSpellcastingEntry(targetActor, traditions, actorClass) {
+    var spellcastingEntry;
+
     //Get any dedications that grant spellcasting
     let dedicationClass = new Map();
     let dedicationFeats = targetActor.items.filter(i => /Dedication/.test(i.name) && i.type == 'feat');
@@ -775,7 +834,6 @@ export class HeroLabImporter {
       if (testClass) dedicationClass.set(v.name.split(' ')[0], testClass);
     }
 
-    var spellcastingEntry;
     //Loop through the traditions from export
     for(let [tradition,spells] of Object.entries(traditions)) {
       let dedication = Array.from(dedicationClass).find(i => i[1].tradition.includes(tradition.toLowerCase()))
@@ -785,7 +843,7 @@ export class HeroLabImporter {
         //See if they already have this tradition
         spellcastingEntry = this.existingSpellcastingEntry(targetActor.spellcasting.collections.entries(), actorClass.ability, actorClass.type, tradition);
         //They don't have one, so make it
-        if(!spellcastingEntry) spellcastingEntry = await this.createSpellcastingEntry(targetActor, `${exportItems.class[0].name} Spells`, tradition.toLowerCase(), actorClass.type, actorClass.ability);
+        if(!spellcastingEntry) spellcastingEntry = await this.createSpellcastingEntry(targetActor, `${targetActor.class.name} Spells`, tradition.toLowerCase(), actorClass.type, actorClass.ability);
       }
       else if(dedication) {
         //See if they already have this tradition
@@ -797,14 +855,15 @@ export class HeroLabImporter {
       //Add the spells to the spellcasting entry
       for(let [key,spell] of Object.entries(spells)) {
         let spellItem = await this.findItem('pf2e.spells-srd', itemRename(spell.name))
+        //Can't find spell, try without ()
+        if(!spellItem) spellItem = await this.findItem("pf2e.spells-srd", itemRename(spell.name.replace(/\s*\(.*?\)\s*/g, '')));
+
         let foundSpell = spellcastingEntry.getName(spellItem.name)
-        if(foundSpell?.system.level.value != spell.spLevelNet && !foundSpell?.system.traits.value.includes('cantrip')) {
-          spellcastingEntry.addSpell(spellItem, spell.spLevelNet);
+        if(foundSpell?.system.location.heightenedLevel != spell.spLevelNet && !foundSpell?.system.traits.value.includes('cantrip')) {
+          spellcastingEntry.addSpell(spellItem, {groupId: spell.spLevelNet });
         }
       }
     }
-
-    this.updateFocusSpells(targetActor, exportItems);
   }
 
   async updateFocusSpells(targetActor, exportItems) {
@@ -831,8 +890,8 @@ export class HeroLabImporter {
     //Check for existing spellcasting entry
     for(let [key, value] of spellcastingEntries) {
       let spEntry = value.entry.system;
-          if(spEntry?.ability.value == ability.substring(0,3) && spEntry?.prepared.value == prepared && spEntry?.tradition.value == tradition.toLowerCase())
-            return value;
+      if(spEntry?.ability.value == ability.substring(0,3) && spEntry?.prepared.value == prepared && spEntry?.tradition.value == tradition.toLowerCase())
+        return value;
     }
     return undefined;
   }
