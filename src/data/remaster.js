@@ -99,7 +99,7 @@ const REMASTER_NAMES = [
   { hlName: "Touch of Idiocy", foundryName: "Stupefy" },
   { hlName: "Tree Shape", foundryName: "One with Plants" },
   { hlName: "Tree Stride", foundryName: "Nature's Pathway" },
-  { hlName: "Trueseeing", foundryName: "Truesight" },
+  { hlName: "True Seeing", foundryName: "Truesight" },
   { hlName: "True Strike", foundryName: "Sure Strike" },
   { hlName: "Unseen Servant", foundryName: "Phantasmal Minion" },
   { hlName: "Vampiric Touch", foundryName: "Vampiric Feast" },
