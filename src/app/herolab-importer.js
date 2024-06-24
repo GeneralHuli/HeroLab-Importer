@@ -2,7 +2,7 @@ import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.mjs';
 import { itemRename } from "../data/remaster.js"
 import CONSTANTS from "../data/global.js"
 
-const hloiVer = "v0.2.5"
+const hloiVer = "v0.2.6"
 
 let hlodebug = false;
 const color1='color: #7bf542';  //bright green
@@ -785,13 +785,10 @@ export class HeroLabImporter {
 
     //Get defaults for Class
     let actorClass = CONSTANTS.CLASS_CASTER_TYPE[exportItems.class[0].name.toLowerCase()]
+
     await this.updateFocusSpells(targetActor, exportItems);
     await this.updateSpellcastingEntry(targetActor, traditions, actorClass);
     await this.updateInnateSpells(targetActor, innateTraditions, actorClass);
-
-    console.log(this.spellsNotAdded)
-    console.log(traditions)
-    console.log(innateTraditions)
   }
 
   async updateInnateSpells(targetActor, traditions, actorClass) {
@@ -859,7 +856,10 @@ export class HeroLabImporter {
         if(!spellItem) spellItem = await this.findItem("pf2e.spells-srd", itemRename(spell.name.replace(/\s*\(.*?\)\s*/g, '')));
 
         let foundSpell = spellcastingEntry.getName(spellItem.name)
-        if(foundSpell?.system.location.heightenedLevel != spell.spLevelNet && !foundSpell?.system.traits.value.includes('cantrip')) {
+        if(spellcastingEntry.entry.system.prepared.value === "prepared") {
+          if(!foundSpell) spellcastingEntry.addSpell(spellItem);
+        }
+        else if(foundSpell?.system.location.heightenedLevel != spell.spLevelNet && !foundSpell?.system.traits.value.includes('cantrip')) {
           spellcastingEntry.addSpell(spellItem, {groupId: spell.spLevelNet });
         }
       }
