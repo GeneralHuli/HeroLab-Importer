@@ -761,9 +761,9 @@ export class HeroLabImporter {
     await targetActor.inventory.removeCoins(targetActor.inventory.coins);
 
     HeroLabImporter.log(hlodebug, "Updating wealth");
-    for(let coinStr of exportWealth.split(',')) {
+    for(let coinStr of exportWealth.split(', ')) {
       let coinVal = coinStr.trim().split(' ')
-      coins[coinVal[1]] = coinVal[0];
+      coins[coinVal[1]] = coinVal[0].replace(',','');
     }
 
     await targetActor.inventory.addCoins(coins);
