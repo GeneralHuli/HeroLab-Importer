@@ -79,6 +79,13 @@ Hooks.on('ready', async function() {
         type : Boolean,
         default : true,
       });
+      game.settings.register('herolab-importer', 'importWealth', {
+        name : "Import Wealth",
+        scope : "client",
+        config : false,
+        type : Boolean,
+        default : true,
+      });
   }
   hlodebug = game.settings.get('herolab-importer', 'debugEnabled');
   userToken = game.settings.get('herolab-importer', 'userToken');
@@ -92,11 +99,6 @@ Hooks.on('renderActorSheet', function(obj, html){
   } else {
     // Only inject the link if the actor is of type "character" and the user has permission to update it
       const actor = obj.actor;
-      //TODO: I don't like that this runs each rendor
-      if (hlodebug) {
-        console.log("%cHeroLab Importer | %cPF2e System Version: herolab-importer actor type: " + actor.type,color1,color4);
-        console.log("%cHeroLab Importer | %cCan user modify: " + actor.canUserModify(game.user, "update"),color1,color4);
-      }
 
       if (!(actor.type === "character")){ return;}
       if (actor.canUserModify(game.user, "update")==false){ return;}
@@ -127,9 +129,28 @@ export class HeroLabImporter {
     this.importSpells = game.settings.get('herolab-importer', 'importSpells');
     this.importFeats = game.settings.get('herolab-importer', 'importFeats');
     this.importSkills = game.settings.get('herolab-importer', 'importSkills');
+    this.importWealth = game.settings.get('herolab-importer', 'importWealth');
+    
+    this.debugMatch = {
+      ancestry: {},
+      heritage: {},
+      background: {},
+      class: {},
+      feats: [],
+      equipment: [],
+      spells: [],
+    };
+
   }
 
   async beginHeroLabImport(targetActor,userToken) {
+    //Clear out the used arrays
+    this.debugMatch.spells = [];
+    this.debugMatch.feats = [];
+    this.debugMatch.equipment = [];
+    this.itemsNotAdded = [];
+    this.spellsNotAdded = [];
+    
     window.testActor = targetActor;
     HeroLabImporter.log(this.hlodebug,'Starting HeroLabImport')
 
@@ -166,6 +187,8 @@ export class HeroLabImporter {
           <label for="importFeats"><strong>Import Feats:</strong> Update all Feats from Hero Lab Online. Best guess for feat types. Recommend you double check.</label></p>
           <p><input id="importSpells" type="checkbox" ${this.importSpells ? 'checked' : ''} />
           <label for="importSpells"><strong>Import Spells:</strong> Update all Spells from Hero Lab Online. Best guess for spell lists. Recomment you double check.</label></p>
+          <p><input id="importWealth" type="checkbox" ${this.importWealth ? 'checked' : ''} />
+          <label for="importWealth"><strong>Import Wealth:</strong> Update actor wealth. This will remove ALL existing coins in inventory!!</label></p>
         </div>
         <hr/>
         <br><br><strong>Once you click Import, please be patient as the process might take up to 45 seconds to complete.</strong><br><br>
@@ -210,10 +233,12 @@ export class HeroLabImporter {
             this.importSkills = html.find('[id="importSkills"]')[0].checked;
             this.importFeats = html.find('[id="importFeats"]')[0].checked;
             this.importSpells = html.find('[id="importSpells"]')[0].checked;
+            this.importWealth = html.find('[id="importWealth"]')[0].checked;
             game.settings.set('herolab-importer', 'importEquipment', this.importEquipment);
             game.settings.set('herolab-importer', 'importSkills', this.importSkills);
             game.settings.set('herolab-importer', 'importFeats', this.importFeats);
             game.settings.set('herolab-importer', 'importSpells', this.importSpells);
+            game.settings.set('herolab-importer', 'importWealth', this.importWealth);
           }
         },
         no: {
@@ -326,19 +351,25 @@ export class HeroLabImporter {
     }
 
     //Set Ancestry
-    if(characterActorExport.gameValues.actRace) {
-      let pf2eAncestry = await this.findItem("pf2e.ancestries",characterActorExport.gameValues.actRace);
+    if(characterActorExport.gameValues?.actRace) {
+      let importAncestry = characterActorExport.gameValues.actRace
+      let pf2eAncestry = await this.findItem("pf2e.ancestries",importAncestry);
       //Can't find Ancestry? Try again with only first word
-      if(!pf2eAncestry) pf2eAncestry = await this.findItem("pf2e.ancestries",characterActorExport.gameValues.actRace.split(" ")[0]);
-      if(!(pf2eAncestry?.name === targetActor.ancestry?.name))
+      if(!pf2eAncestry) pf2eAncestry = await this.findItem("pf2e.ancestries",importAncestry.split(" ")[0]);
+      if(!(pf2eAncestry?.name === targetActor.ancestry?.name)) 
         await targetActor.createEmbeddedDocuments('Item',[pf2eAncestry], {render: false});
+        
+      this.debugMatch.ancestry = {import: importAncestry, export: pf2eAncestry};
     }
 
     //Update Background
     if(characterActorExport.gameValues?.actBackgroundText) {
-      let pf2eBackground = await this.findItem("pf2e.backgrounds",characterActorExport.gameValues.actBackgroundText);
+      let importBackground = characterActorExport.gameValues.actBackgroundText;
+      let pf2eBackground = await this.findItem("pf2e.backgrounds",importBackground);
       if(!(pf2eBackground?.name === targetActor.background?.name))
         await targetActor.createEmbeddedDocuments('Item',[pf2eBackground.toObject()], {render: false});
+
+      this.debugMatch.background = {import: importBackground, export: pf2eBackground};
     }
 
     //Update Heritage
@@ -346,6 +377,8 @@ export class HeroLabImporter {
       let pf2eHeritage = await this.findItem("pf2e.heritages",exportItems['heritage'][0].name);
       if(!(pf2eHeritage?.name === targetActor.heritage?.name))
         await targetActor.createEmbeddedDocuments('Item',[pf2eHeritage.toObject()], {render: false});
+
+      this.debugMatch.heritage = {import: exportItems['heritage'][0].name, export: pf2eHeritage};
     }
 
     //Update Deity
@@ -353,6 +386,8 @@ export class HeroLabImporter {
       let pf2eDeity = await this.findItem("pf2e.deities",exportItems["deity"][0].name)
       if(!(pf2eDeity?.name === targetActor.deity?.name))
         await targetActor.createEmbeddedDocuments('Item',[pf2eDeity.toObject()], {render: false});
+
+      this.debugMatch.deity = {import: exportItems["deity"][0].name, export: pf2eDeity};
     }
 
     //Update Level
@@ -380,6 +415,8 @@ export class HeroLabImporter {
 
         Hooks.off('renderChoiceSetPrompt', choiceHook);
       }
+
+      this.debugMatch.class = {import: exportItems['class'][0].name, export: pf2eClass};
     }
     
     //Update Actor Attributes
@@ -393,6 +430,9 @@ export class HeroLabImporter {
 
     //Update Actor Armor
     if(this.importEquipment) await this.updateActorArmor(targetActor, exportItems['armor']);
+
+    //Update Actor Wealth
+    if(this.importWealth) await this.updateActorWealth(targetActor, characterActorExport.gameValues?.actMoneyNet);
 
     //Set Languages
     await this.updateActorLanguages(targetActor, exportItems['language']);
@@ -409,7 +449,7 @@ export class HeroLabImporter {
 
     //List all the things we couldn't add
     HeroLabImporter.log(this.hlodebug, "Couldn't add these items: " + this.itemsNotAdded);
-    this.itemsNotAdded = [];
+    HeroLabImporter.log(this.hlodebug, "Couldn't add these spells: " + this.spellsNotAdded);
 
     targetActor.update({
       "flags.exportSource.world": game.world.id,
@@ -418,6 +458,11 @@ export class HeroLabImporter {
       "flags.exportSource.coreVersion": game.version,
       "flags.herolabimporter.version.value": hloiVer,
     });
+
+    if(hlodebug) {
+      console.log("%cHeroLab Importer | %cMatched items:",color1,color4, this.debugMatch);
+
+    }
 
     targetActor.render();
   }
@@ -658,6 +703,7 @@ export class HeroLabImporter {
 
       if(newFeat) {
         featItems.push(newFeat);
+        this.debugMatch.feats.push({import: feat, export: newFeat});
       }
       else {
         this.itemsNotAdded.push(feat.name);
@@ -709,6 +755,20 @@ export class HeroLabImporter {
     await this.addActorItems(targetActor, exportWeapon);
   }
 
+  async updateActorWealth(targetActor, exportWealth) {
+    const coins = {cp: 0, sp: 0, gp: 0, pp: 0};
+
+    await targetActor.inventory.removeCoins(targetActor.inventory.coins);
+
+    HeroLabImporter.log(hlodebug, "Updating wealth");
+    for(let coinStr of exportWealth.split(',')) {
+      let coinVal = coinStr.trim().split(' ')
+      coins[coinVal[1]] = coinVal[0];
+    }
+
+    await targetActor.inventory.addCoins(coins);
+  }
+
   async addActorItems(targetActor, exportGear, container=undefined) {
     //Adds gear with ?container
     var gearItem;
@@ -729,6 +789,7 @@ export class HeroLabImporter {
           if (value?.stackQty) {
             await this.updateItemQuantity(targetActor, addedItem, value.stackQty);
           }
+          this.debugMatch.equipment.push({import: value, export: gearItem});
         }
         else {
           this.itemsNotAdded.push(value.name);
@@ -760,7 +821,9 @@ export class HeroLabImporter {
     //Get spells by traditions
     for(let [key,spell] of Object.entries(exportItems['spell'])) {
       let tradition = undefined
-      if((tradition = spell.Trait.split(',').find(value => /^trd/.test(value))?.substring(3))  && spell?.useInPlay) {
+      //if((tradition = spell.Trait.split(',').find(value => /^trd/.test(value))?.substring(3))  && spell?.useInPlay) {
+      if((tradition = spell.Trait.split(',').find(value => /^trd/.test(value))?.substring(3))) {
+
         if(spell?.SpellHelper === "Innate") {
           if(tradition in innateTraditions) {
             innateTraditions[tradition].push(spell);
@@ -780,7 +843,7 @@ export class HeroLabImporter {
           }
         }
       }
-      else this.spellsNotAdded.push(spell);
+      else this.spellsNotAdded.push(spell.name);
     }
 
     //Get defaults for Class
@@ -811,6 +874,7 @@ export class HeroLabImporter {
         let foundSpell = spellcastingEntry.getName(spellItem.name)
         if(foundSpell?.system.location.heightenedLevel != spell.spLevelNet && !foundSpell?.system.traits.value.includes('cantrip')) {
           let newSpell = await spellcastingEntry.addSpell(spellItem, {groupId: spell.spLevelNet });
+          this.debugMatch.spells.push({import: spell, export: newSpell});
           newSpell.update({'system.location.uses.max': spell?.trkMaximum, 'system.location.uses.min': spell?.trkMaximum}, {render: false});
         }
       }
@@ -862,6 +926,7 @@ export class HeroLabImporter {
         else if(foundSpell?.system.location.heightenedLevel != spell.spLevelNet && !foundSpell?.system.traits.value.includes('cantrip')) {
           spellcastingEntry.addSpell(spellItem, {groupId: spell.spLevelNet });
         }
+        this.debugMatch.spells.push({import: spell, export: spellItem});
       }
     }
   }
@@ -882,6 +947,7 @@ export class HeroLabImporter {
       //If they don't have it, give it to them
       if(!spellcastingEntry.getName(spellItem.name)) {
         spellcastingEntry.addSpell(spellItem, spell.spLevelNet);
+        this.debugMatch.spells.push({import: spell, export: spellItem});
       }
     }
   }
