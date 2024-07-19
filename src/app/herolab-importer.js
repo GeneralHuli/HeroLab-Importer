@@ -132,22 +132,22 @@ export class HeroLabImporter {
     this.importWealth = game.settings.get('herolab-importer', 'importWealth');
     
     this.debugMatch = {
-      ancestry: {},
-      heritage: {},
-      background: {},
-      class: {},
-      feats: [],
-      equipment: [],
-      spells: [],
+      Ancestry: {},
+      Heritage: {},
+      Background: {},
+      Class: {},
+      Feats: [],
+      Equipment: [],
+      Spells: [],
     };
 
   }
 
   async beginHeroLabImport(targetActor,userToken) {
     //Clear out the used arrays
-    this.debugMatch.spells = [];
-    this.debugMatch.feats = [];
-    this.debugMatch.equipment = [];
+    this.debugMatch.Spells = [];
+    this.debugMatch.Feats = [];
+    this.debugMatch.Equipment = [];
     this.itemsNotAdded = [];
     this.spellsNotAdded = [];
     
@@ -167,7 +167,7 @@ export class HeroLabImporter {
           <p><strong>Please change input method for attributes to "Manual Entry" before you continue! That is currently the only input method supported by the importer.</strong></p>
           <br>
           <p>Please note - items which cannot be matched to the Foundry database will not be imported!<p>
-        <div>
+        </div>
         <hr/>
         <div id="divCode">
           Enter the element token of the character you wish to import<br>
@@ -277,9 +277,50 @@ export class HeroLabImporter {
     //Import the main Character
     if(importCharacter) {
       await this.importActorGameValues(targetActor,characterExport.actors['actor.1']);
+      this.displayChangesDialog();
     }
+
+    
     
     targetActor.sheet.render()
+  }
+
+  displayChangesDialog() {
+    let content = `<div class="changes">`
+    for(let [section, data] of Object.entries(this.debugMatch)) {
+      content += `<div><header class="bold">${section}</header>`
+      if(!Array.isArray(data)) {
+        content += `<p class="tab">${data.import} -> `
+        content += `<a class="content-link" draggable="true" data-link data-uuid="${data.export.uuid}" data-type="Item"><i class="fas fa-suitcase"></i>${data.export.name}</a></p>`
+      }
+      else {
+        for(let item of data) {
+          content += `<p class="tab">${item.import.name} -> `
+          content += `<a class="content-link" draggable="true" data-link data-uuid="${item.export.uuid}" data-type="Item"><i class="fas fa-suitcase"></i>"${item.export.name}"</a></p>`
+        }
+      }
+      content += `</div>`
+    }
+    content += `</div>
+    <style>
+      .changes {
+        overflow-y: scroll;
+        height: 800px;
+        width: 500;
+      }
+      p.tab { margin-left: 30px; }
+      .bold { font-weight: bold; }
+    </style>`
+
+    new Dialog({
+      window: { title: "Changes made to actor" },
+      content: content,
+      buttons: [{
+        action: "ok",
+        label: "OK",
+        default: true,
+      }],
+    }).render({ force: true });
   }
 
   async getHeroLabExport(userToken, elementToken) {
@@ -359,7 +400,7 @@ export class HeroLabImporter {
       if(!(pf2eAncestry?.name === targetActor.ancestry?.name)) 
         await targetActor.createEmbeddedDocuments('Item',[pf2eAncestry], {render: false});
         
-      this.debugMatch.ancestry = {import: importAncestry, export: pf2eAncestry};
+      this.debugMatch.Ancestry = {import: importAncestry, export: pf2eAncestry};
     }
 
     //Update Background
@@ -369,7 +410,7 @@ export class HeroLabImporter {
       if(!(pf2eBackground?.name === targetActor.background?.name))
         await targetActor.createEmbeddedDocuments('Item',[pf2eBackground.toObject()], {render: false});
 
-      this.debugMatch.background = {import: importBackground, export: pf2eBackground};
+      this.debugMatch.Background = {import: importBackground, export: pf2eBackground};
     }
 
     //Update Heritage
@@ -378,7 +419,7 @@ export class HeroLabImporter {
       if(!(pf2eHeritage?.name === targetActor.heritage?.name))
         await targetActor.createEmbeddedDocuments('Item',[pf2eHeritage.toObject()], {render: false});
 
-      this.debugMatch.heritage = {import: exportItems['heritage'][0].name, export: pf2eHeritage};
+      this.debugMatch.Heritage = {import: exportItems['heritage'][0].name, export: pf2eHeritage};
     }
 
     //Update Deity
@@ -387,7 +428,7 @@ export class HeroLabImporter {
       if(!(pf2eDeity?.name === targetActor.deity?.name))
         await targetActor.createEmbeddedDocuments('Item',[pf2eDeity.toObject()], {render: false});
 
-      this.debugMatch.deity = {import: exportItems["deity"][0].name, export: pf2eDeity};
+      this.debugMatch.Deity = {import: exportItems["deity"][0].name, export: pf2eDeity};
     }
 
     //Update Level
@@ -416,7 +457,7 @@ export class HeroLabImporter {
         Hooks.off('renderChoiceSetPrompt', choiceHook);
       }
 
-      this.debugMatch.class = {import: exportItems['class'][0].name, export: pf2eClass};
+      this.debugMatch.Class = {import: exportItems['class'][0].name, export: pf2eClass};
     }
     
     //Update Actor Attributes
@@ -464,7 +505,6 @@ export class HeroLabImporter {
 
     }
 
-    targetActor.render();
   }
 
   async findItem(packName,itemName) {
@@ -703,7 +743,7 @@ export class HeroLabImporter {
 
       if(newFeat) {
         featItems.push(newFeat);
-        this.debugMatch.feats.push({import: feat, export: newFeat});
+        this.debugMatch.Feats.push({import: feat, export: newFeat});
       }
       else {
         this.itemsNotAdded.push(feat.name);
@@ -789,7 +829,7 @@ export class HeroLabImporter {
           if (value?.stackQty) {
             await this.updateItemQuantity(targetActor, addedItem, value.stackQty);
           }
-          this.debugMatch.equipment.push({import: value, export: gearItem});
+          this.debugMatch.Equipment.push({import: value, export: gearItem});
         }
         else {
           this.itemsNotAdded.push(value.name);
@@ -874,7 +914,7 @@ export class HeroLabImporter {
         let foundSpell = spellcastingEntry.getName(spellItem.name)
         if(foundSpell?.system.location.heightenedLevel != spell.spLevelNet && !foundSpell?.system.traits.value.includes('cantrip')) {
           let newSpell = await spellcastingEntry.addSpell(spellItem, {groupId: spell.spLevelNet });
-          this.debugMatch.spells.push({import: spell, export: newSpell});
+          this.debugMatch.Spells.push({import: spell, export: newSpell});
           newSpell.update({'system.location.uses.max': spell?.trkMaximum, 'system.location.uses.min': spell?.trkMaximum}, {render: false});
         }
       }
@@ -926,7 +966,7 @@ export class HeroLabImporter {
         else if(foundSpell?.system.location.heightenedLevel != spell.spLevelNet && !foundSpell?.system.traits.value.includes('cantrip')) {
           spellcastingEntry.addSpell(spellItem, {groupId: spell.spLevelNet });
         }
-        this.debugMatch.spells.push({import: spell, export: spellItem});
+        this.debugMatch.Spells.push({import: spell, export: spellItem});
       }
     }
   }
@@ -947,7 +987,7 @@ export class HeroLabImporter {
       //If they don't have it, give it to them
       if(!spellcastingEntry.getName(spellItem.name)) {
         spellcastingEntry.addSpell(spellItem, spell.spLevelNet);
-        this.debugMatch.spells.push({import: spell, export: spellItem});
+        this.debugMatch.Spells.push({import: spell, export: spellItem});
       }
     }
   }
