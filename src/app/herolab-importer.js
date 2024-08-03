@@ -329,6 +329,8 @@ export class HeroLabImporter {
     HeroLabImporter.log(this.hlodebug,'Getting export from Hero Lab Online');
     const accessToken = await this.getHeroLabAccessToken(userToken);
 
+    if(!accessToken) return null;
+
     //Fetch the character Export
     await foundry.utils.fetchJsonWithTimeout("https://api.herolab.online/v1/character/get", {
       method: "POST",
@@ -375,9 +377,15 @@ export class HeroLabImporter {
       headers: {
         "Content-type": "application/json; charset=UTF-8"
       }
-    });
+    })
+      .catch((error) => {
+        Dialog.prompt({
+          content: `<p>Failed to get the Access Token from Hero Labs Online.</p>
+                    <p>Please make sure the GM has entered their 'User Token' in the appropriate spot in the module settings.</p>`
+        });
+      });
 
-    return response.accessToken
+    return response?.accessToken
   }
 
   async importActorGameValues(targetActor,characterActorExport) {
