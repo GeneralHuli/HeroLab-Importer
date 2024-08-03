@@ -30,10 +30,11 @@ The only thing that seems to work perfectly and as expected right now. Lore skil
 
 # Issues/Future Plans
 
-- If an added item would prompt for a selection, it currently cannot choose this for you. I would like to work on automagically choosing options. Limitations on the information given from Hero Lab Online may make this difficult.
+- If an added item would prompt for a selection, ~~it currently cannot choose this for you~~. I would like to work on automagically choosing options. Limitations on the information given from Hero Lab Online may make this difficult.
+    UPDATE: Currently has limited ability to 'auto-select' when user would be prompted.
 - Attributes can only be "Manual Entry". Hero Lab Online does not, as of yet, provide information on boosts.
 - Character descriptors (Hair/Eyes etc.) are not exported, so I can't import them.
-- Equipment in the export are not listed as equipted or now, so I can't equipt them for you.
+- Equipment in the export are not listed as equipted or not, so I can't equipt them for you.
 - Trying to compare equipment that you already have vs. what is imported is a nightmare. Maybe in the future I can tackle this, but there are just too many variables.
 - Spells imported do not contain information on which spellcasting list they come from, so I can't know for sure where they should go. Worst case right now is you will have to move them accordingly, after importing.
 - Feats are the same as the spells. I can only guess on the feat slot by the traits and the level of the feat.
