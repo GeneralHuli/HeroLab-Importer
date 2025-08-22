@@ -641,6 +641,7 @@ export class HeroLabImporter {
 
   async updateActorAttributes(targetActor, exportAttributes) {
     //Abbilities by manual
+    await targetActor.update({ "system.build.attributes.manual": true }, { render: true });
     if (targetActor.system.build.attributes.manual) {
       for (let [k, ability] of Object.entries(exportAttributes)) {
         let update = ability?.stAbScModifier || 0;
@@ -870,28 +871,29 @@ export class HeroLabImporter {
     }
   }
 
-async updateArmorRune(targetActor, gearItems, weapon) {
+async updateArmorRune(targetActor, gearItems, armor) {
     var gearItem;
 
     for (var [key, value] of Object.entries(gearItems)) {
       if (value.compset == 'Rune') {
         var potencyRuneValue = CONSTANTS.FUNDAMENTAL_RUNE_ARMOR_POTENCY[value.base];
         if (potencyRuneValue > 0) {
-          weapon.update({ "system.runes.potency": potencyRuneValue });
-          HeroLabImporter.log(this.hlodebug, potencyRuneValue);
+          armor.update({ "system.runes.potency": potencyRuneValue });
+          HeroLabImporter.log(this.hlodebug, `Adding Potency Rune ${potencyRuneValue} to ${armor.name}`);
         }
         var resilientRuneValue = CONSTANTS.FUNDEMENTAL_RUNE_ARMOR_RELILIENT[value.base];
         //Verify Resilient
         if (resilientRuneValue > 0) {
-          weapon.update({ "system.runes.resilient": resilientRuneValue });
-          HeroLabImporter.log(this.hlodebug, resilientRuneValue);
+          armor.update({ "system.runes.resilient": resilientRuneValue });
+          HeroLabImporter.log(this.hlodebug, `Adding Resilient Rune ${resilientRuneValue} to ${armor.name}`);
         }
         //Verify Property
         if (!potencyRuneValue && !resilientRuneValue) {
           var propertyRune = await this.findItem("pf2e.equipment-srd", value.name);
           if (propertyRune) {
-            weapon.system.runes.property.push(propertyRune.system.slug);
-            weapon.update({ "system.runes.property": weapon.system.runes.property });
+            armor.system.runes.property.push(propertyRune.system.slug);
+            armor.update({ "system.runes.property": armor.system.runes.property });
+            HeroLabImporter.log(this.hlodebug, `Adding Property Rune ${propertyRune.name} to ${armor.name}`);
 
           }
       }
@@ -908,13 +910,13 @@ async updateArmorRune(targetActor, gearItems, weapon) {
         var potencyRuneValue = CONSTANTS.FUNDAMENTAL_RUNE_WEAPON_POTENCY[value.base];
         if (potencyRuneValue > 0) {
           weapon.update({ "system.runes.potency": potencyRuneValue });
-          HeroLabImporter.log(this.hlodebug, potencyRuneValue);
+          HeroLabImporter.log(this.hlodebug, `Adding Potency Rune ${potencyRuneValue} to ${weapon.name}`);      
         }
         var strikingRuneValue = CONSTANTS.FUNDEMENTAL_RUNE_WEAPON_STRIKING[value.base];
         //Verify Strikeing
         if (strikingRuneValue > 0) {
           weapon.update({ "system.runes.striking": strikingRuneValue });
-          HeroLabImporter.log(this.hlodebug, strikingRuneValue);
+          HeroLabImporter.log(this.hlodebug, `Adding Strinking Rune ${strikingRuneValue} to ${weapon.name}`);
         }
         //Verify Property
         if (!potencyRuneValue && !strikingRuneValue) {
@@ -922,6 +924,7 @@ async updateArmorRune(targetActor, gearItems, weapon) {
           if (propertyRune) {
             weapon.system.runes.property.push(propertyRune.system.slug);
             weapon.update({ "system.runes.property": weapon.system.runes.property });
+            HeroLabImporter.log(this.hlodebug, `Adding Property Rune ${propertyRune.name} to ${weapon.name}`);
 
           }
         }
