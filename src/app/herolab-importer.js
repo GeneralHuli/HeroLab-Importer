@@ -291,12 +291,12 @@ export class HeroLabImporter {
       content += `<div><header class="bold">${section}</header>`
       if(!Array.isArray(data)) {
         content += `<p class="tab">${data.import} -> `
-        content += `<a class="content-link" draggable="true" data-link data-uuid="${data.export.uuid}" data-type="Item"><i class="fas fa-suitcase"></i>${data.export.name}</a></p>`
+        content += `<a class="content-link" draggable="true" data-link data-uuid="${data.export ? data.export.uuid : ''}" data-type="Item"><i class="fas fa-suitcase"></i>${data.export ? data.export.name : 'Unknown'}</a></p>`
       }
       else {
         for(let item of data) {
           content += `<p class="tab">${item.import.name} -> `
-          content += `<a class="content-link" draggable="true" data-link data-uuid="${item.export.uuid}" data-type="Item"><i class="fas fa-suitcase"></i>"${item.export.name}"</a></p>`
+          content += `<a class="content-link" draggable="true" data-link data-uuid="${item.export ? item.export.uuid : ''}" data-type="Item"><i class="fas fa-suitcase"></i>"${item.export ? item.export.name : 'Unknown'}"</a></p>`
         }
       }
       content += `</div>`
@@ -349,7 +349,7 @@ export class HeroLabImporter {
         console.error("%cHeroLab Importer | %cUnable to import HeroLab JSON! Error: "+error,color1,color4)
       });
 
-    HeroLabImporter.log(this.hlodebug, "Character JSON: "+ charExport);
+    HeroLabImporter.log(this.hlodebug, "Character JSON: ", charExport);
 
     window.charExport = charExport;
 
@@ -433,7 +433,7 @@ export class HeroLabImporter {
     //Update Deity
     if(exportItems['deity'][0]?.name) {
       let pf2eDeity = await this.findItem("pf2e.deities",exportItems["deity"][0].name)
-      if(!(pf2eDeity?.name === targetActor.deity?.name))
+      if(pf2eDeity?.toObject && !(pf2eDeity?.name === targetActor.deity?.name))
         await targetActor.createEmbeddedDocuments('Item',[pf2eDeity.toObject()], {render: false});
 
       this.debugMatch.Deity = {import: exportItems["deity"][0].name, export: pf2eDeity};
@@ -501,10 +501,6 @@ export class HeroLabImporter {
     HeroLabImporter.log(this.hlodebug, "Couldn't add these spells: " + this.spellsNotAdded);
 
     targetActor.update({
-      "flags.exportSource.world": game.world.id,
-      "flags.exportSource.system": game.system.id,
-      "flags.exportSource.systemVersion": game.system.version,
-      "flags.exportSource.coreVersion": game.version,
       "flags.herolabimporter.version.value": hloiVer,
     });
 
@@ -895,7 +891,7 @@ export class HeroLabImporter {
     }
 
     //Get defaults for Class
-    let actorClass = CONSTANTS.CLASS_CASTER_TYPE[exportItems.class[0].name.toLowerCase()]
+    let actorClass = CONSTANTS.CLASS_CASTER_TYPE[exportItems.class[0].name.toLowerCase()];
 
     await this.updateFocusSpells(targetActor, exportItems);
     await this.updateSpellcastingEntry(targetActor, traditions, actorClass);
@@ -907,11 +903,14 @@ export class HeroLabImporter {
     //Loop through the traditions from export
     for(let [tradition,spells] of Object.entries(traditions)) {
 
+      let targetAbility = actorClass?.ability ? actorClass.Ability : 'charisma';
+
       //See if they have a tradition that matches their class spellcasting abilities
       //See if they already have this tradition
-      spellcastingEntry = this.existingSpellcastingEntry(targetActor.spellcasting.collections.entries(), actorClass.ability, 'innate', tradition);
+      spellcastingEntry = actorClass ?  this.existingSpellcastingEntry(targetActor.spellcasting.collections.entries(), targetAbility, 'innate', tradition) : undefined;
+
       //They don't have one, so make it
-      if(!spellcastingEntry) spellcastingEntry = await this.createSpellcastingEntry(targetActor, `Innate Spells`, tradition.toLowerCase(), 'innate', actorClass.ability);
+      if(!spellcastingEntry) spellcastingEntry = await this.createSpellcastingEntry(targetActor, `Innate Spells`, tradition.toLowerCase(), 'innate', targetAbility);
       
       //Add the spells to the spellcasting entry
       for(let [key,spell] of Object.entries(spells)) {
@@ -948,7 +947,7 @@ export class HeroLabImporter {
       let dedication = Array.from(dedicationClass).find(i => i[1].tradition.includes(tradition.toLowerCase()))
 
       //See if they have a tradition that matches their class spellcasting abilities
-      if(actorClass.tradition.includes(tradition.toLowerCase())) {
+      if(actorClass?.tradition?.includes(tradition.toLowerCase())) {
         //See if they already have this tradition
         spellcastingEntry = this.existingSpellcastingEntry(targetActor.spellcasting.collections.entries(), actorClass.ability, actorClass.type, tradition);
         //They don't have one, so make it
