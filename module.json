@@ -12,8 +12,8 @@
   "version": "#{VERSION}#",
   "compatibility": {
     "minimum": "10",
-    "verified": "12.327",
-    "maximum": "12"
+    "verified": "13.351",
+    "maximum": "13"
   },
   "relationships": {
     "systems": [
@@ -23,7 +23,7 @@
         "manifest": "https://github.com/foundryvtt/pf2e/releases/download/latest/system.json",
         "compatibility": {
           "minimum": "6.0.1",
-          "verified": "6.0.2"
+          "verified": "7.8.0"
         }
       }
     ]

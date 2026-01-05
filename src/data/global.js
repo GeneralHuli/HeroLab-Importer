@@ -1,6 +1,10 @@
 const CONSTANTS = {
 
 CLASS_CASTER_TYPE: {
+    'animist': {
+	          'ability': 'wisdom',
+	          'type': 'prepared',
+	          'tradition': ['divine']},
     'bard': {     'ability': 'charisma',
                   'type': 'spontaneous',
                   'tradition': ['occult']},
